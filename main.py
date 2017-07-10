@@ -39,14 +39,17 @@ def refresh_server_data(config):
 
 
 if __name__ == "__main__":
-	#  Endlessly iterate over the first X server results
+	#  Open tool config
 	root_path = os.sep.join(sys.argv[0].split("/"))
 	config_path = os.sep.join(["content", "tool.json"])
 	with open(config_path, "r") as fp:
 		tool_config = json.loads(fp.read())
 
+	#  Load server metadata
 	servers = refresh_server_data(tool_config)
 	num_results = tool_config["iter_results"]
+
+	#  Endlessly iterate over the first X server results
 	while True:
 		for s in servers[0:num_results]:
 			print("Connecting to a server...\n\tDomain: {}\n\tDistance Class: {}\n\tLoad Class: {}\n\tFile Path: {}\n".format(
