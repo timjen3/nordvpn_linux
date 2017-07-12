@@ -4,7 +4,6 @@ from nordvpn.load_content import NordVpnServerData
 from datetime import datetime, timedelta
 import time
 import json
-import sys
 import os
 
 
