@@ -3,7 +3,7 @@ import subprocess
 
 
 def _get_formatted_sh_script(absolute_ovpn_file_path, username, password):
-	raw_text = "echo {2} | openvpn {0} --user {1} --askpass stdin"
+	raw_text = "echo {2} | openvpn --config {0} --user {1} --askpass stdin"
 	return raw_text.format(
 		absolute_ovpn_file_path,
 		username,
