@@ -40,9 +40,8 @@ def refresh_server_data(config):
 
 if __name__ == "__main__":
 	#  Open tool config
-	root_path = os.sep.join(sys.argv[0].split("/"))
+	os.environ["APPLICATION_ROOT"] = sys.argv[0]
 	config_path = os.sep.join(["content", "tool.json"])
-	os.environ["APPLICATION_ROOT"] = root_path
 	with open(config_path, "r") as fp:
 		tool_config = json.loads(fp.read())
 
@@ -59,6 +58,6 @@ if __name__ == "__main__":
 				s.load_class,
 				ovpn_connector.get_ovpn_file_path(domain_name=s.domain)
 			))
-			ovpn_connector.process_ovpn_file(s.domain, root_path, tool_config)
+			ovpn_connector.process_ovpn_file(s.domain, tool_config)
 			print("Disconnected from server...Reconnecting to a new server in 5 seconds.")
 			time.sleep(5)

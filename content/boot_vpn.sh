@@ -1,1 +1,0 @@
-echo {3} | openvpn {1} --user {2} --askpass stdin
