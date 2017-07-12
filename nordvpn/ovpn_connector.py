@@ -2,12 +2,9 @@ import os
 import subprocess
 
 
-def _get_formatted_sh_script(absolute_ovpn_file_path, username, password):
-	raw_text = "echo {2} | openvpn --config {0} --user {1} --askpass stdin"
-	return raw_text.format(
-		absolute_ovpn_file_path,
-		username,
-		password
+def _get_formatted_sh_script(ovpn_config_file_path):
+	return "openvpn --config {} --auth-user-pass auth.txt".format(
+		ovpn_config_file_path
 	)
 
 
@@ -19,7 +16,7 @@ def get_ovpn_file_path(domain_name):
 
 def process_ovpn_file(domain_name, config):
 	absolute_path = get_ovpn_file_path(domain_name)
-	prepared_sh_script = _get_formatted_sh_script(absolute_ovpn_file_path=absolute_path, username=config["username"], password=config["password"])
+	prepared_sh_script = _get_formatted_sh_script(ovpn_config_file_path=absolute_path)
 	print(prepared_sh_script)
 	ps = subprocess.Popen(prepared_sh_script, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 	ps.communicate()
