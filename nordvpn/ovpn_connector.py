@@ -3,7 +3,7 @@ import subprocess
 
 
 def _get_formatted_sh_script(ovpn_config_file_path):
-	return "openvpn --config {} --auth-user-pass auth.txt".format(
+	return "sudo openvpn --config {} --auth-user-pass auth.txt".format(
 		ovpn_config_file_path
 	)
 
