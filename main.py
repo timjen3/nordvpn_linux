@@ -42,6 +42,7 @@ if __name__ == "__main__":
 	#  Open tool config
 	root_path = os.sep.join(sys.argv[0].split("/"))
 	config_path = os.sep.join(["content", "tool.json"])
+	os.environ["APPLICATION_ROOT"] = root_path
 	with open(config_path, "r") as fp:
 		tool_config = json.loads(fp.read())
 
