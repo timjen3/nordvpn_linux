@@ -4,7 +4,7 @@ Not yet tried in production.
 
 # Prerequesites
 
-1. Install openvpn with the package manager available to your system.
+1. Install openvpn
 1. Install python 3.x no additional packages needed.
 
 
@@ -12,6 +12,7 @@ Not yet tried in production.
 
 1. Clone this repository.
 1. Download and unzip the nordvpn ovpn files to content/ovpnfiles
+1. Create a file in the root directory of the cloned repository called 'auth.txt' with your nord username on line 1, your nord password on line 2, and no additional lines.
 
 # Future
 

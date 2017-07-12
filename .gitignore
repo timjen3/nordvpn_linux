@@ -2,3 +2,4 @@ __pycache__
 *.ovpn
 *.bin
 .idea
+auth.txt
