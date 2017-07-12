@@ -18,6 +18,6 @@ def process_ovpn_file(domain_name, config):
 	absolute_path = get_ovpn_file_path(domain_name)
 	prepared_sh_script = _get_formatted_sh_script(ovpn_config_file_path=absolute_path)
 	print(prepared_sh_script)
-	ps = subprocess.Popen(prepared_sh_script, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+	ps = subprocess.Popen(prepared_sh_script, shell=True)
 	ps.communicate()
 	ps.wait()
