@@ -16,7 +16,7 @@ def _get_formatted_sh_script(root_dir, relative_file_path, username, password):
 
 def get_ovpn_file_path(domain_name):
 	file_name = "{}.tcp443.ovpn".format(domain_name)
-	return sep.join(["content", "ovpnfiles", file_name])
+	return sep.join(["ovpnfiles", file_name])
 
 
 def process_ovpn_file(domain_name, root_path, config):
