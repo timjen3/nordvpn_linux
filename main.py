@@ -40,7 +40,7 @@ def refresh_server_data(config):
 
 if __name__ == "__main__":
 	#  Open tool config
-	os.environ["APPLICATION_ROOT"] = sys.argv[0]
+	os.environ["APPLICATION_ROOT"] = os.getcwd()
 	config_path = os.sep.join(["content", "tool.json"])
 	with open(config_path, "r") as fp:
 		tool_config = json.loads(fp.read())
