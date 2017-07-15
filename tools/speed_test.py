@@ -10,7 +10,7 @@ def get_avg_ping(host):
 		line_as_string = line.decode("utf-8")
 		if "time=" in line_as_string and "ms" in line_as_string:
 			response_time = line_as_string.split("time=")[1].split("ms")[0]
-			total_response_time += int(response_time)
+			total_response_time += float(response_time)
 		elif "Time out" in line_as_string:
 			total_response_time += 1000
 		elif "could not find host" in line_as_string:
