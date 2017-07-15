@@ -6,8 +6,8 @@ from tools import localinfo, filter_ranker
 import logging
 
 
-def should_refresh(last_refresh, refresh_interval=timedelta(hours=0)):
-	"""If you want to avoid pulling server data pass in a refresh_interval to use cache."""
+def should_refresh(last_refresh, refresh_interval=timedelta(hours=1)):
+	"""If you want to avoid pulling server increase refresh_interval to use cache longer."""
 	logger = logging.getLogger(__name__)
 	if last_refresh is None:
 		return True
@@ -28,7 +28,7 @@ class ServerManager:
 		self._filter_ranker = filter_ranker.ServerRanker(self.locale_data)
 
 		self.refresh_server_data_if_needed()
-		self._filter_ranker.load(self.persistence.server_data["data"], config["max_load"])
+		self._filter_ranker.load(self.persistence.server_data["data"], self.config)
 
 	@property
 	def servers(self):
@@ -43,7 +43,7 @@ class ServerManager:
 		if should_refresh(last_refresh):
 			servers = get_json(url=self.config["nord_server_meta_url"])
 			self._load(servers=servers)
-			self._filter_ranker.load(self.persistence.server_data["data"], max_load=self.config["max_load"])
+			self._filter_ranker.load(self.persistence.server_data["data"], config=self.config)
 			return True
 		return False
 
@@ -60,5 +60,7 @@ class ServerManager:
 				server_proper.longitude = server["location"]["long"]
 				server_proper.load = server["load"]
 				server_proper.features = server["features"]
+				server_proper.categories = [c["name"] for c in server["categories"]]
+				server_proper.search_keywords = server["search_keywords"]
 				servers_proper.append(server_proper)
 			self.persistence.write(servers_proper)

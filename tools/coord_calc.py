@@ -8,5 +8,5 @@ def haversine(coorda, coordb):
 	dlat = lat2 - lat1
 	a = sin(dlat/2)**2 + cos(lat1) * cos(lat2) * sin(dlon/2)**2
 	c = 2 * asin(sqrt(a))
-	km = 6367 * c
-	return km
+	mi = round(3956.27036673 * c, 3)
+	return "{} miles".format(mi)

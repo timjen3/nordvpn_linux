@@ -27,6 +27,8 @@ if __name__ == "__main__":
 			"Distance Class: {}".format(server.distance_class),
 			"Load: {}".format(server.load),
 			"Features: {}".format(",".join([k for k, v in server.features.items() if v])),  # List server features
+			"Categories: {}".format(server.categories),
+			"Search Keywords: {}".format(server.search_keywords),
 			"File: {}".format(openvpn_connector.get_ovpn_file_path(domain_name=server.domain, config=tool_config))
 		]))
 		openvpn_connector.process_openvpn_file(server.domain, tool_config)

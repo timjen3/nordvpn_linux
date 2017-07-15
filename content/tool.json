@@ -1,5 +1,5 @@
 {
-  "nord_server_meta_url": "http://zwyr157wwiu6eior.com/server",
+  "nord_server_meta_url": "https://api.nordvpn.com/server",
   "max_load": 20,
   "cli_args": [
         "--auth-user-pass auth.txt",
@@ -7,5 +7,11 @@
 		"--ping-exit 60 --inactive 3600 --ping 10",
         "--log /var/log/nordvpn_linux.log"
   ],
-  "connect": "tcp"
+  "connect": "udp",
+  "required_categories": [
+      "Standard VPN servers"
+  ],
+  "required_search_keywords": [
+    "Netflix"
+  ]
 }

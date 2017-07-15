@@ -10,7 +10,9 @@ class Server:
 			"load_class",
 			"region",
 			"zip",
-			"features"
+			"features",
+			"categories",
+			"search_keywords",
 		]
 		for attribute in my_attributes:
 			setattr(self, attribute, kwargs.get(attribute, None))
