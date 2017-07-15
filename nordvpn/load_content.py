@@ -13,7 +13,6 @@ class NordVpnServerData:
 		if os.path.exists(self.save_path):
 			with open(self.save_path, "rb") as fp:
 				data = pickle.load(file=fp)
-				#data["date"] = datetime.strptime(data["date"], "%Y-%m-%dT%H:%M:%S")
 				return data
 		else:
 			return {"data": [], "date": None}

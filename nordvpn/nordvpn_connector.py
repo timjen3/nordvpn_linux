@@ -6,7 +6,8 @@ from tools import localinfo, filter_ranker
 import logging
 
 
-def should_refresh(last_refresh, refresh_interval=timedelta(hours=12)):
+def should_refresh(last_refresh, refresh_interval=timedelta(hours=0)):
+	"""If you want to avoid pulling server data pass in a refresh_interval to use cache."""
 	logger = logging.getLogger(__name__)
 	if last_refresh is None:
 		return True
@@ -48,15 +49,16 @@ class ServerManager:
 
 	def _load(self, servers):
 		"""Loads servers into correct format."""
-		self.persistence.server_data["data"] = list()
-		servers_proper = list()
-		for server in servers:
-			server_proper = Server()
-			server_proper.domain = server["domain"]
-			server_proper.country = server["country"]
-			server_proper.latitude = server["location"]["lat"]
-			server_proper.longitude = server["location"]["long"]
-			server_proper.load = server["load"]
-			server_proper.features = server["features"]
-			servers_proper.append(server_proper)
-		self.persistence.write(servers_proper)
+		if len(servers) > 0:
+			self.persistence.server_data["data"] = list()
+			servers_proper = list()
+			for server in servers:
+				server_proper = Server()
+				server_proper.domain = server["domain"]
+				server_proper.country = server["country"]
+				server_proper.latitude = server["location"]["lat"]
+				server_proper.longitude = server["location"]["long"]
+				server_proper.load = server["load"]
+				server_proper.features = server["features"]
+				servers_proper.append(server_proper)
+			self.persistence.write(servers_proper)
