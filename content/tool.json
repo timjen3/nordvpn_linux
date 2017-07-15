@@ -5,7 +5,7 @@
         "--auth-user-pass auth.txt",
 		"--single-session",
 		"--ping-exit 60 --inactive 3600 --ping 10",
-        "--log var/log/nordvpn_linux.log"
+        "--log /var/log/nordvpn_linux.log"
   ],
   "connect": "tcp"
 }
