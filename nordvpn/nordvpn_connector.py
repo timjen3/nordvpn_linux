@@ -55,6 +55,8 @@ class ServerManager:
 			for server in servers:
 				server_proper = Server()
 				server_proper.domain = server["domain"]
+				server_proper.ip = server["ip_address"]
+				server_proper.response_ms = 9999.0
 				server_proper.country = server["country"]
 				server_proper.latitude = server["location"]["lat"]
 				server_proper.longitude = server["location"]["long"]

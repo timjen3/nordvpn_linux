@@ -9,4 +9,4 @@ def haversine(coorda, coordb):
 	a = sin(dlat/2)**2 + cos(lat1) * cos(lat2) * sin(dlon/2)**2
 	c = 2 * asin(sqrt(a))
 	mi = round(3956.27036673 * c, 3)
-	return "{} miles".format(mi)
+	return mi

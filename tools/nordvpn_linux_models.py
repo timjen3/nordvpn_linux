@@ -2,12 +2,14 @@ class Server:
 	def __init__(self, **kwargs):
 		my_attributes = [
 			"domain",
+			"ip",
+			"response_ms",
 			"country",
 			"latitude",
 			"longitude",
 			"distance",
 			"distance_class",
-			"load_class",
+			"load",
 			"region",
 			"zip",
 			"features",
