@@ -1,4 +1,11 @@
 {
   "nord_server_meta_url": "http://zwyr157wwiu6eior.com/server",
-  "iter_results": 10
+  "max_load": 20,
+  "cli_args": [
+        "--auth-user-pass auth.txt",
+		"--single-session",
+		"--ping-exit 60 --inactive 3600 --ping 10",
+        "--log var/log/nordvpn_linux.log"
+  ],
+  "connect": "tcp"
 }

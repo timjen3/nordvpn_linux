@@ -13,13 +13,15 @@ class NordVpnServerData:
 		if os.path.exists(self.save_path):
 			with open(self.save_path, "rb") as fp:
 				data = pickle.load(file=fp)
-				data["date"] = datetime.strptime(data["date"], "%Y-%m-%d")
+				#data["date"] = datetime.strptime(data["date"], "%Y-%m-%dT%H:%M:%S")
 				return data
+		else:
+			return {"data": [], "date": None}
 
 	def write(self, data):
-		dump_data = {
+		self.server_data = {
 			"data": data,
-			"date": datetime.utcnow().strftime("%Y-%m-%d")
+			"date": datetime.utcnow()
 		}
 		with open(self.save_path, "wb") as fp:
-			pickle.dump(dump_data, file=fp)
+			pickle.dump(self.server_data, file=fp)

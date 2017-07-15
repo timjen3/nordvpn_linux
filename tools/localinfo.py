@@ -1,6 +1,6 @@
 from tools.http_connector import get
 from tools.http_connector import get_json
-from tools.models import LocaleInfo
+from tools.nordvpn_linux_models import LocaleInfo
 
 
 def get_ip():

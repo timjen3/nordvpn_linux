@@ -6,17 +6,18 @@ def _clean_for_matching(val):
 
 
 class ServerRanker:
+	"""Sorts and filters servers. Model structure can be found in nordvpn_linux_models."""
 	def __init__(self, locale_meta):
 		self.servers = []
 		self.locale_info = locale_meta
 		self.server_distance_classes = dict()
 		self.server_load_classes = dict()
 
-	def load(self, servers):
+	def load(self, servers, max_load):
 		"""
 		Calculates distance of each server. Also enumerates distance and load for convenience.
-		:param servers: A list of Server()
-		:return:
+		:param servers: A list of Server() defined by nordvpn_linux_models
+		:param max_load: Maximum amount of load allowed when filtering servers.
 		"""
 		for s in servers:
 			s.distance = haversine(coorda=(self.locale_info.latitude, self.locale_info.longitude), coordb=(s.latitude, s.longitude))
@@ -30,12 +31,11 @@ class ServerRanker:
 			s.distance_class = distance_classes[s.distance]
 			s.load_class = load_classes[s.load]
 		self.servers = servers
+		self.sort()
+		self.filter(max_load)
 
 	def sort(self):
-		"""
-		Country will appear first if there is a match, then distance, lastly server load.
-		:return: Sorted list of Server()
-		"""
+		"""Country will appear first if there is a match, then distance, lastly server load."""
 		self.servers = sorted(self.servers, key=lambda s: s.load_class)
 		self.servers = sorted(self.servers, key=lambda s: s.distance_class)
 		self.servers = sorted(self.servers, key=lambda s: s.country == self.locale_info.country, reverse=True)

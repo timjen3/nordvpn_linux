@@ -1,6 +1,5 @@
 # About
 
-Not yet tried in production.
 
 # Prerequesites
 
@@ -16,8 +15,7 @@ Not yet tried in production.
 
 # Future
 
-TODO: Add code to set this up as an init.d service.
-
+TODO: Add code to set this up as a service.
 TODO: Add code to download and unzip NordVPN ovpn files to avoid the manual step.
 
 There are 3 external sources used by this tool that can be adjusted. If these stop working you can swap them out fairly easily although some will take more work.
