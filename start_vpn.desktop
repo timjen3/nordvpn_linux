@@ -1,0 +1,7 @@
+[Desktop Entry]
+Name=Start VPN Connection
+Comment=
+Exec=bash -c 'cd /usr/src/nordvpn_linux && clear && sudo python3 main.py'
+Icon=
+Terminal=true
+Type=Application
