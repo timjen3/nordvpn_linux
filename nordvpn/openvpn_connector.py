@@ -28,10 +28,10 @@ def _process_openvpn_file(domain_name, config):
 	prepared_sh_script = _get_formatted_sh_script(ovpn_config_file_path=absolute_path, args=config["cli_args"])
 	ps = subprocess.Popen(prepared_sh_script, shell=True)
 	ps.communicate()
-	subprocess.Popen("content/vpn_up.sh")
 	ps.wait()
-	subprocess.Popen("content/vpn_down.sh")
 
 
 def start_vpn_service(domain_name, config):
+	subprocess.Popen("content/vpn_up.sh")
 	_process_openvpn_file(domain_name, config)
+	subprocess.Popen("content/vpn_down.sh")
