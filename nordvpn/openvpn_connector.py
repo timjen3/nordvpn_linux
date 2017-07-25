@@ -32,6 +32,6 @@ def _process_openvpn_file(domain_name, config):
 
 
 def start_vpn_service(domain_name, config):
-	subprocess.Popen("content/vpn_up.sh")
+	# subprocess.Popen("content/vpn_up.sh")
 	_process_openvpn_file(domain_name, config)
-	subprocess.Popen("content/vpn_down.sh")
+	# subprocess.Popen("content/vpn_down.sh")
