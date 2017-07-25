@@ -37,4 +37,4 @@ if __name__ == "__main__":
 			logger.debug("Skipping a server because it is responding too slowly:\n\t" + server_stats)
 		else:
 			logger.info("Connecting vpn:\n\t" + server_stats)
-			openvpn_connector.process_openvpn_file(server.domain, tool_config)
+			openvpn_connector.start_vpn_service(server.domain, tool_config)

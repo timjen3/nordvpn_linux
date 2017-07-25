@@ -23,9 +23,15 @@ def get_ovpn_file_path(domain_name, config):
 	return os.sep.join([application_root, "content", "ovpnfiles", file_name])
 
 
-def process_openvpn_file(domain_name, config):
+def _process_openvpn_file(domain_name, config):
 	absolute_path = get_ovpn_file_path(domain_name=domain_name, config=config)
 	prepared_sh_script = _get_formatted_sh_script(ovpn_config_file_path=absolute_path, args=config["cli_args"])
 	ps = subprocess.Popen(prepared_sh_script, shell=True)
 	ps.communicate()
+	subprocess.Popen("content/vpn_up.sh")
 	ps.wait()
+	subprocess.Popen("content/vpn_down.sh")
+
+
+def start_vpn_service(domain_name, config):
+	_process_openvpn_file(domain_name, config)
