@@ -11,6 +11,7 @@ import os
 def get_new_ip_meta(old_meta, stop_flag):
 	logger = logging.getLogger(__name__)
 	current_meta = localinfo.get_meta()
+	print(old_meta.ip)
 	while old_meta.ip == current_meta.ip and not stop_flag["stop"]:
 		logger.info(old_meta.ip)
 		logger.info(current_meta.ip)
