@@ -11,13 +11,12 @@ import os
 def get_new_ip_meta(old_meta, stop_flag):
 	logger = logging.getLogger(__name__)
 	current_meta = localinfo.get_meta()
-	print(old_meta.ip)
 	while old_meta.ip == current_meta.ip and not stop_flag["stop"]:
 		logger.info(old_meta.ip)
 		logger.info(current_meta.ip)
 		time.sleep(5)
 		current_meta = localinfo.get_meta()
-	logger.info("Connected to server successfully.\n\t".join([
+	msg = "\n\t".join([
 		"Old IP: {}".format(old_meta.ip),
 		"New IP: {}".format(current_meta.ip),
 		"Country: {}".format(current_meta.country),
@@ -25,7 +24,9 @@ def get_new_ip_meta(old_meta, stop_flag):
 		"Region: {}".format(current_meta.region),
 		"City: {}".format(current_meta.city),
 		"ISP: {}".format(current_meta.isp),
-	]))
+	])
+	ps = subprocess.Popen("notify-send 'VPN CONNECTED' '{}'".format(msg), shell=True)
+	ps.communicate()
 
 
 def _get_formatted_sh_script(ovpn_config_file_path, args):
@@ -64,11 +65,11 @@ def start_vpn_service(domain_name, config, old_meta):
 	actually worked! Every damn time..."""
 	thread_state = {"stop": False}
 	connect_vpn_fun = lambda d, c: _process_openvpn_file(d, c)
-	connect_vpn = threading.Thread(target=connect_vpn_fun(domain_name, config))
+	connect_vpn = threading.Thread(target=connect_vpn_fun(domain_name, config), daemon=False)
 	output_connection_fun = lambda m, f: get_new_ip_meta(m, f)
-	output_connection_info = threading.Thread(target=output_connection_fun(old_meta, thread_state), daemon=False)
-
+	output_connection_info = threading.Thread(target=output_connection_fun(old_meta, thread_state), daemon=True)
 	output_connection_info.start()
+
 	connect_vpn.start()
 	connect_vpn.join()
 	thread_state["stop"] = True
