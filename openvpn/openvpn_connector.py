@@ -1,6 +1,25 @@
 """Launches vpn connection using NordVPN ovpn connection file. Supports passing optional arguments."""
-import os
+from tools import localinfo
 import subprocess
+import threading
+import logging
+import time
+import os
+
+
+def get_new_ip_meta(old_meta):
+	logger = logging.getLogger(__name__)
+	current_meta = localinfo.get_meta()
+	while old_meta.ip == current_meta.ip:
+		time.sleep(5)
+		current_meta = localinfo.get_meta()
+	logger.info("Connected to server successfully.\n\t".join([
+		"Country: {}".format(current_meta.country),
+		"Zipcode: {}".format(current_meta.zipcode),
+		"Region: {}".format(current_meta.region),
+		"City: {}".format(current_meta.city),
+		"ISP: {}".format(current_meta.isp),
+	]))
 
 
 def _get_formatted_sh_script(ovpn_config_file_path, args):
@@ -31,8 +50,14 @@ def _process_openvpn_file(domain_name, config):
 	ps.wait()
 
 
-def start_vpn_service(domain_name, config, abort):
-	# subprocess.Popen("content/vpn_up.sh")
-	_process_openvpn_file(domain_name, config)
-	abort["kill"] = True
-	# subprocess.Popen("content/vpn_down.sh")
+# subprocess.Popen("content/vpn_up.sh")
+# subprocess.Popen("content/vpn_down.sh")
+def start_vpn_service(domain_name, config, old_meta):
+	start_vpn_fun = lambda d, c: _process_openvpn_file(d, c)
+	t = threading.Thread(target=start_vpn_fun(domain_name, config))
+	t.start()
+	output_connection_fun = lambda m: get_new_ip_meta(m)
+	t2 = threading.Thread(target=output_connection_fun(old_meta))
+	t2.start()
+	t.join()
+	t2._stop()
