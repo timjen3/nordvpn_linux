@@ -8,10 +8,10 @@ import time
 import os
 
 
-def get_new_ip_meta(old_meta):
+def get_new_ip_meta(old_meta, stop_flag):
 	logger = logging.getLogger(__name__)
 	current_meta = localinfo.get_meta()
-	while old_meta.ip == current_meta.ip:
+	while old_meta.ip == current_meta.ip and not stop_flag["stop"]:
 		logger.info(old_meta.ip)
 		logger.info(current_meta.ip)
 		time.sleep(5)
@@ -61,12 +61,13 @@ def _process_openvpn_file(domain_name, config):
 def start_vpn_service(domain_name, config, old_meta):
 	"""Connect vpn and output new connection information. B/c the first thing you want to see is whether it
 	actually worked! Every damn time..."""
+	thread_state = {"stop": False}
 	connect_vpn_fun = lambda d, c: _process_openvpn_file(d, c)
 	connect_vpn = threading.Thread(target=connect_vpn_fun(domain_name, config))
-	output_connection_fun = lambda m: get_new_ip_meta(m)
-	output_connection_info = threading.Thread(target=output_connection_fun(old_meta))
+	output_connection_fun = lambda m, f: get_new_ip_meta(m, f)
+	output_connection_info = threading.Thread(target=output_connection_fun(old_meta, thread_state))
 
 	connect_vpn.start()
 	output_connection_info.start()
 	connect_vpn.join()
-	output_connection_info._stop()
+	thread_state["stop"] = True
