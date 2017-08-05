@@ -25,8 +25,7 @@ def get_new_ip_meta(old_meta, stop_flag):
 		"City: {}".format(current_meta.city),
 		"ISP: {}".format(current_meta.isp),
 	])
-	ps = subprocess.Popen("notify-send 'VPN CONNECTED' '{}'".format(msg), shell=True)
-	ps.communicate()
+	os.popen("notify-send 'VPN CONNECTED' '{}'".format(msg))
 
 
 def _get_formatted_sh_script(ovpn_config_file_path, args):
