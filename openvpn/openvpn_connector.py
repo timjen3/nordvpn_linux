@@ -16,7 +16,7 @@ def get_new_ip_meta(old_meta, stop_flag):
 		logger.info(current_meta.ip)
 		time.sleep(5)
 		current_meta = localinfo.get_meta()
-	msg = "\n\t".join([
+	msg = " ".join([
 		"Old IP: {}".format(old_meta.ip),
 		"New IP: {}".format(current_meta.ip),
 		"Country: {}".format(current_meta.country),
@@ -62,6 +62,8 @@ def _process_openvpn_file(domain_name, config):
 def start_vpn_service(domain_name, config, old_meta):
 	"""Connect vpn and output new connection information. B/c the first thing you want to see is whether it
 	actually worked! Every damn time..."""
+	os.popen("notify-send 'Old IP: {}'".format(old_meta.ip))
+
 	thread_state = {"stop": False}
 	connect_vpn_fun = lambda d, c: _process_openvpn_file(d, c)
 	connect_vpn = threading.Thread(target=connect_vpn_fun(domain_name, config), daemon=False)
