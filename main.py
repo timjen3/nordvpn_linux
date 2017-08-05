@@ -14,9 +14,10 @@ logging.basicConfig(
 )
 
 
-def get_new_ip_meta(old_ip):
-	current_meta = localinfo.LocaleInfo()
-	while old_ip != current_meta.ip:
+def get_new_ip_meta(old_meta, kill_me):
+	# TODO: If ovpn fails to connect and wants to try a new server exit.
+	current_meta = localinfo.get_meta()
+	while old_meta.ip == current_meta.ip or kill_me["kill"]:
 		time.sleep(5)
 		current_meta = localinfo.get_meta()
 	return current_meta
@@ -43,10 +44,14 @@ def connect_to_fastest_server_looped():
 		if response_time >= tool_config["max_response_time"]:
 			logger.debug("Skipping a server because it is responding too slowly:\n\t" + target_server_stats)
 		else:
-			logger.info("Connecting to server via vpn tunnel:\n\t" + target_server_stats)
-			old_ip = SM.locale_data.ip
-			t = threading.Thread(openvpn_connector.start_vpn_service(server.domain, tool_config))
-			t2 = threading.Thread(get_new_ip_meta(old_ip))
+			logger.info("Connecting to server via vpn tunnel...\n\t" + target_server_stats)
+			kill_me = {"kill": False}
+			start_vpn_fun = lambda d, c, f: openvpn_connector.start_vpn_service(d, c, f)
+			t = threading.Thread(target=start_vpn_fun(server.domain, tool_config, kill_me))
+			get_new_ip_info = lambda o, f: get_new_ip_meta(o, f)
+			t2 = threading.Thread(target=get_new_ip_info)
+			t.start()
+			t2.start()
 			locale_meta = t2.join()
 			new_ip_meta = "\n\t".join([
 				"Country: {}".format(locale_meta.country),

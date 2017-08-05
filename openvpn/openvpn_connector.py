@@ -31,7 +31,8 @@ def _process_openvpn_file(domain_name, config):
 	ps.wait()
 
 
-def start_vpn_service(domain_name, config):
+def start_vpn_service(domain_name, config, abort):
 	# subprocess.Popen("content/vpn_up.sh")
 	_process_openvpn_file(domain_name, config)
+	abort["kill"] = True
 	# subprocess.Popen("content/vpn_down.sh")
