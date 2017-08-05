@@ -1,7 +1,9 @@
 """Basic http connector to avoid requiring dependencies."""
-import http.client
-import json
 from urllib3.util import parse_url
+import http.client
+import zipfile
+import json
+import io
 
 
 def get_request(scheme, host, endpoint, method, headers):
@@ -20,7 +22,18 @@ def _explode_and_get(url, headers):
 	endpoint = url_parts.request_uri
 	scheme = url_parts.scheme
 	method = "GET"
-	return get_request(scheme=scheme, host=host, endpoint=endpoint, method=method, headers=headers)
+	stream = get_request(scheme=scheme, host=host, endpoint=endpoint, method=method, headers=headers)
+	return stream.read()
+
+
+def get_text(url):
+	headers = {
+		"Accept": "*/*",
+		"Content-Type": "text/html",
+		"Connection": "keep-alive",
+	}
+	raw_response = _explode_and_get(url=url, headers=headers)
+	return raw_response.decode("utf-8")
 
 
 def get_json(url):
@@ -30,14 +43,16 @@ def get_json(url):
 		"Connection": "keep-alive",
 	}
 	raw_response = _explode_and_get(url=url, headers=headers)
-	return json.loads(raw_response.read().decode("utf-8"))
+	json_string = raw_response.decode("utf-8")
+	return json.loads(json_string)
 
 
-def get(url):
+def get_zip_file(url):
 	headers = {
 		"Accept": "*/*",
 		"Content-Type": "text/html",
 		"Connection": "keep-alive",
 	}
 	raw_response = _explode_and_get(url=url, headers=headers)
-	return raw_response.read().decode("utf-8")
+	fp = io.BytesIO(raw_response)
+	return zipfile.ZipFile(file=fp)
