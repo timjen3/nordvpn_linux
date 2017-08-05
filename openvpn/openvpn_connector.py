@@ -1,5 +1,6 @@
 """Launches vpn connection using NordVPN ovpn connection file. Supports passing optional arguments.
 Does some fancy threading to output new connection info after getting connected."""
+from tools.linux import send_desktop_msg
 from tools import localinfo
 import subprocess
 import threading
@@ -11,11 +12,13 @@ import os
 def get_new_ip_meta(old_meta, stop_flag):
 	logger = logging.getLogger(__name__)
 	current_meta = localinfo.get_meta()
+	send_desktop_msg("trying in a sec.")
 	while old_meta.ip == current_meta.ip and not stop_flag["stop"]:
 		logger.info(old_meta.ip)
 		logger.info(current_meta.ip)
 		time.sleep(5)
 		current_meta = localinfo.get_meta()
+	send_desktop_msg("got this far...")
 	msg = " ".join([
 		"Old IP: {}".format(old_meta.ip),
 		"New IP: {}".format(current_meta.ip),
@@ -25,7 +28,7 @@ def get_new_ip_meta(old_meta, stop_flag):
 		"City: {}".format(current_meta.city),
 		"ISP: {}".format(current_meta.isp),
 	])
-	os.popen("notify-send 'VPN CONNECTED' '{}'".format(msg))
+	send_desktop_msg("VPN CONNECTED: {}'".format(msg))
 
 
 def _get_formatted_sh_script(ovpn_config_file_path, args):
