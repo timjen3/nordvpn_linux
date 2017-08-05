@@ -49,7 +49,7 @@ def connect_to_fastest_server_looped():
 			start_vpn_fun = lambda d, c, f: openvpn_connector.start_vpn_service(d, c, f)
 			t = threading.Thread(target=start_vpn_fun(server.domain, tool_config, kill_me))
 			get_new_ip_info = lambda o, f: get_new_ip_meta(o, f)
-			t2 = threading.Thread(target=get_new_ip_info)
+			t2 = threading.Thread(target=get_new_ip_info(SM.locale_data, kill_me))
 			t.start()
 			t2.start()
 			locale_meta = t2.join()
