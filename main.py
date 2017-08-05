@@ -1,5 +1,6 @@
 from nordvpn.nordvpn_connector import ServerManager
 from tools.speed_test import get_avg_ping
+from tools.linux import send_desktop_msg
 from openvpn import openvpn_connector
 import logging
 import json
@@ -33,6 +34,7 @@ def connect_to_fastest_server_looped():
 			logger.debug("Skipping a server because it is responding too slowly:\n\t" + target_server_stats)
 		else:
 			logger.info("Connecting to server via vpn tunnel...\n\t" + target_server_stats)
+			send_desktop_msg(target_server_stats)
 			openvpn_connector.start_vpn_service(server.domain, tool_config, SM.locale_data)
 
 
