@@ -67,7 +67,7 @@ def start_vpn_service(domain_name, config, old_meta):
 	output_connection_fun = lambda m, f: get_new_ip_meta(m, f)
 	output_connection_info = threading.Thread(target=output_connection_fun(old_meta, thread_state))
 
-	connect_vpn.start()
 	output_connection_info.start()
+	connect_vpn.start()
 	connect_vpn.join()
 	thread_state["stop"] = True
