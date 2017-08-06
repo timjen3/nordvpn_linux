@@ -6,21 +6,14 @@ import time
 import os
 
 
-def get_new_ip_meta(old_meta):
-	current_meta = localinfo.get_meta()
+def get_new_ip_meta(old_ip):
+	current_ip = localinfo.get_ip()
 	send_desktop_msg("got this far...")
-	while old_meta.ip == current_meta.ip:
+	while old_ip == current_ip:
 		time.sleep(5)
-		current_meta = localinfo.get_meta()
+		current_ip = localinfo.get_ip()
 	send_desktop_msg("got this far...")
-	msg = ";".join([
-		"New IP: {}".format(current_meta.ip),
-		"Country: {}".format(current_meta.country),
-		"Zipcode: {}".format(current_meta.zipcode),
-		"Region: {}".format(current_meta.region),
-		"City: {}".format(current_meta.city),
-		"ISP: {}".format(current_meta.isp),
-	])
+	msg = "VPN CONNECTED: {}".format(current_ip)
 	send_desktop_msg("VPN CONNECTED: {}'".format(msg))
 
 
@@ -58,5 +51,6 @@ def _process_openvpn_file(domain_name, config):
 def start_vpn_service(domain_name, config, old_meta):
 	"""Connect vpn and output new connection information. B/c the first thing you want to see is whether it
 	actually worked! Every damn time..."""
+	old_ip = old_meta.ip
 	_process_openvpn_file(domain_name, config)
-	get_new_ip_meta(old_meta)
+	get_new_ip_meta(old_ip)
