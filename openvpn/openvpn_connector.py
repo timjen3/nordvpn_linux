@@ -8,14 +8,13 @@ import sys
 
 
 def sentry(old_ip):
-	current_ip = localinfo.get_ip()
-	send_desktop_msg("got this far...")
-	while old_ip == current_ip:
+	current_meta = localinfo.get_meta()
+	while old_ip == current_meta.ip:
 		time.sleep(5)
-		current_ip = localinfo.get_ip()
+		current_meta = localinfo.get_meta()
 	send_desktop_msg("got this far...")
-	msg = "VPN CONNECTED: {}".format(current_ip)
-	send_desktop_msg("VPN CONNECTED: {}'".format(msg))
+	msg = "VPN CONNECTED: IP: {}; Region: {};".format(current_meta.ip, current_meta.region)
+	send_desktop_msg(msg)
 	sys.exit()
 
 
