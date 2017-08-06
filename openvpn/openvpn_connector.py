@@ -7,13 +7,12 @@ import time
 import os
 
 
-def sentry(pid, old_meta):
-	print(pid)
+def sentry(p, old_meta):
+	spawned_process_id = p.pid  # TODO: ensure openvpn process still exists!
 	current_meta = localinfo.get_meta()
-	pid_exists = True  # is the openvpn process still running?
-	while pid_exists and old_meta.ip == current_meta.ip:
-		time.sleep(5)
-	current_meta = localinfo.get_meta()
+	while old_meta.ip == current_meta.ip:
+		time.sleep(3)
+		current_meta = localinfo.get_meta()
 	vpn_meta = copy(current_meta)
 	msg = "VPN CONNECTED! IP: {}=>{}; Region: {}=>{};".format(old_meta.ip, current_meta.ip, old_meta.region, current_meta.region)
 	send_desktop_msg(msg, delay=0)
@@ -54,11 +53,10 @@ def get_ovpn_file_path(domain_name, config):
 def _process_openvpn_file(domain_name, config):
 	absolute_path = get_ovpn_file_path(domain_name=domain_name, config=config)
 	prepared_sh_script = _get_formatted_sh_script(ovpn_config_file_path=absolute_path, args=config["cli_args"])
-	ps = subprocess.Popen(prepared_sh_script, shell=True)
-	return ps.communicate()
+	return subprocess.Popen(prepared_sh_script, shell=True)
 
 
 def start_vpn_service(domain_name, config, old_meta):
 	os.popen("sudo killall openvpn")
-	pid = _process_openvpn_file(domain_name, config)
-	sentry(pid, old_meta)
+	process = _process_openvpn_file(domain_name, config)
+	sentry(process, old_meta)
