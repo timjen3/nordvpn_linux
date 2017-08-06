@@ -12,8 +12,7 @@ def sentry(old_meta):
 	while old_meta.ip == current_meta.ip:
 		time.sleep(5)
 		current_meta = localinfo.get_meta()
-	send_desktop_msg("got this far...")
-	msg = "VPN CONNECTED: IP: {}=>{}; Region: {}=>{};".format(current_meta.ip, old_meta.ip, current_meta.region, old_meta.region)
+	msg = "VPN CONNECTED!	IP: {}=>{};	Region: {}=>{};".format(current_meta.ip, old_meta.ip, old_meta.region, current_meta.region)
 	send_desktop_msg(msg)
 	sys.exit()
 
@@ -50,7 +49,6 @@ def _process_openvpn_file(domain_name, config):
 	prepared_sh_script = _get_formatted_sh_script(ovpn_config_file_path=absolute_path, args=config["cli_args"])
 	ps = subprocess.Popen(prepared_sh_script, shell=True)
 	ps.communicate()
-	print("started vpn....")
 
 
 # TODO: Add a kill switch please!!!
