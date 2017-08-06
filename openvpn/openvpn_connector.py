@@ -52,5 +52,6 @@ def _process_openvpn_file(domain_name, config):
 
 
 def start_vpn_service(domain_name, config, old_meta):
+	os.popen("sudo killall openvpn")
 	_process_openvpn_file(domain_name, config)
 	sentry(old_meta)
