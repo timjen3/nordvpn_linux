@@ -23,8 +23,6 @@ def ensure_connect(p, old_meta):
 		current_meta = localinfo.get_meta()
 	msg = "VPN CONNECTED! IP: {}=>{}; Region: {}=>{};".format(old_meta.ip, current_meta.ip, old_meta.region, current_meta.region)
 	send_desktop_msg(msg, delay=3000)
-	import sys
-	sys.exit()
 	# watchdog(current_meta)  # TODO: re-connect automatically instead of just exiting.
 
 
