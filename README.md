@@ -16,8 +16,14 @@ Added a script called prereqs.sh that is untested and will require some tinkerin
 
 Trying my best to get rid of the terminal window. The only way I've been able to do it is to add my user to the vpnusers group and add this line to /etc/sudoers:
 %vpnusers ALL = NOPASSWD: /usr/sbin/openvpn
-
 WARNING: Be extremely careful with the sudoers file. If you mess this file up you will have to go into linux recovery mode to fix the file1!!
+
+Currently you can only use disconnect if you install gksu. Otherwise you'll have to open a terminal and type a couple commands manually.
+apt-get install gksu
+
+Alternative to installing gksu:
+sudo killall openvpn
+sudo service networking restart
 
 # Notes
 
