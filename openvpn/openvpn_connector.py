@@ -7,13 +7,13 @@ import os
 import sys
 
 
-def sentry(old_ip):
+def sentry(old_meta):
 	current_meta = localinfo.get_meta()
-	while old_ip == current_meta.ip:
+	while old_meta.ip == current_meta.ip:
 		time.sleep(5)
 		current_meta = localinfo.get_meta()
 	send_desktop_msg("got this far...")
-	msg = "VPN CONNECTED: IP: {}; Region: {};".format(current_meta.ip, current_meta.region)
+	msg = "VPN CONNECTED: IP: {}=>{}; Region: {}=>{};".format(current_meta.ip, old_meta.ip, current_meta.region, old_meta.region)
 	send_desktop_msg(msg)
 	sys.exit()
 
@@ -59,6 +59,5 @@ def _process_openvpn_file(domain_name, config):
 def start_vpn_service(domain_name, config, old_meta):
 	"""Connect vpn and output new connection information. B/c the first thing you want to see is whether it
 	actually worked! Every damn time..."""
-	old_ip = old_meta.ip
 	_process_openvpn_file(domain_name, config)
-	sentry(old_ip)
+	sentry(old_meta)
