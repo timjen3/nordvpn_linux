@@ -17,8 +17,8 @@ def watchdog(vpn_meta):
 
 def disconnect():
 	current_meta = localinfo.get_meta()
-	os.popen("sudo killall openvpn")
-	os.popen("sudo service networking restart")
+	os.popen("killall openvpn")
+	# os.popen("service networking restart")  # TODO: Needs sudo... figure out alternative.
 	time.sleep(5)
 	new_meta = localinfo.get_meta()
 	msg = "VPN DISCONNECTED! IP: {}=>{}; Region: {}=>{};".format(current_meta.ip, new_meta.ip, current_meta.region, new_meta.region)
