@@ -12,8 +12,7 @@ logging.basicConfig(
 )
 
 
-def connect_to_fastest_server_looped():
-	"""Keeps you connected to the closest/fastest vpn as long as process is running."""
+def connect_vpn():
 	os.environ["APPLICATION_ROOT"] = os.getcwd()
 	logger = logging.getLogger("NORDVPNLINUX")
 	SM = ServerManager(config=tool_config)
@@ -35,10 +34,22 @@ def connect_to_fastest_server_looped():
 		else:
 			logger.info("Connecting to server via vpn tunnel...\n\t" + target_server_stats)
 			openvpn_connector.start_vpn_service(server.domain, tool_config, SM.locale_data)
+			msg = "Started VPN service."
+			return msg
+
+
+def disconnect_function():
+	os.popen("sudo killall openvpn")
+	os.popen("sudo service networking restart")
+	msg = "Killed vpn and restarted networking service"
+	return msg
 
 
 if __name__ == "__main__":
+	from gui.simple_gui import start_gui
+
 	config_path = os.sep.join(["content", "tool.json"])
 	with open(config_path, "r") as fp:
 		tool_config = json.loads(fp.read())
-	connect_to_fastest_server_looped()
+
+	start_gui(start_fun=connect_vpn, stop_fun=disconnect_function)

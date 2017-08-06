@@ -2,6 +2,6 @@
 Name=NordVPN Connector
 Comment=
 Exec=bash -c 'cd /usr/src/nordvpn_linux && clear && sudo python3 connect.py'
-Icon=/usr/src/nordvpn_linux/net.png
+Icon=/usr/src/nordvpn_linux/content/net.png
 Terminal=true
 Type=Application
