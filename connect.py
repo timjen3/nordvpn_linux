@@ -1,3 +1,4 @@
+# TODO: Add a kill switch please!!!
 from nordvpn.nordvpn_connector import ServerManager
 from tools.speed_test import get_avg_ping
 from openvpn import openvpn_connector

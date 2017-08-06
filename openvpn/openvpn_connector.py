@@ -51,11 +51,6 @@ def _process_openvpn_file(domain_name, config):
 	ps.communicate()
 
 
-# TODO: Add a kill switch please!!!
-# subprocess.Popen("content/vpn_up.sh")
-# subprocess.Popen("content/vpn_down.sh")
 def start_vpn_service(domain_name, config, old_meta):
-	"""Connect vpn and output new connection information. B/c the first thing you want to see is whether it
-	actually worked! Every damn time..."""
 	_process_openvpn_file(domain_name, config)
 	sentry(old_meta)
