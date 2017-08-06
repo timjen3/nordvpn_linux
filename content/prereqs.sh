@@ -1,9 +1,7 @@
-# nordvpn connector getting started helper; untested.
-
 sudo apt-get install python3
 sudo apt-get install openvpn
 sudo apt-get install python3-tk
-
+sudo apt-get install gksu
 
 nordvpnusername=input "what's your nordvpn login email?"
 nordvpnpassword=input "what's your nordvpn login password?"

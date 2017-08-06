@@ -8,17 +8,13 @@ You can specify a few configuration options in tool.json
 2. required_search_keywords:
 Not sure the whole list, but I am curious if "Netflix" will actually work with Netflix. Not yet tried.
 
-3. openvpn command line arguments in tool.json as well. There are some defaults in there.
+3. openvpn command line arguments can be put into tool.json as well. There are some defaults in there.
 
-TODO: Add better way to start / stop.
+4. trying to get it to run with command line only on ubuntu 16.04 and it's a real pain. It works fine if the .desktop application is written with terminal=True and EXEC=sudo ... but I want to eliminate the terminal.
 
 # Prerequesites
 
-1. Install openvpn
-1. Install python 3.x no additional packages needed.
-
-# Getting Started
-
+Added a script called prereqs.sh that is untested and will require some tinkering. But it's real simple stuff so don't feel too stressed.
 
 # Notes
 
