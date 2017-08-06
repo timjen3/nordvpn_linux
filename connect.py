@@ -39,8 +39,7 @@ def connect_vpn():
 
 
 def disconnect_function():
-	os.popen("sudo killall openvpn")
-	os.popen("sudo service networking restart")
+	openvpn_connector.disconnect()
 	msg = "Killed vpn and restarted networking service"
 	return msg
 

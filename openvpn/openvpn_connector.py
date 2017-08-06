@@ -15,6 +15,16 @@ def watchdog(vpn_meta):
 	send_desktop_msg(msg, delay=3000)
 
 
+def disconnect():
+	current_meta = localinfo.get_meta()
+	os.popen("sudo killall openvpn")
+	os.popen("sudo service networking restart")
+	time.sleep(5)
+	new_meta = localinfo.get_meta()
+	msg = "VPN DISCONNECTED! IP: {}=>{}; Region: {}=>{};".format(current_meta.ip, new_meta.ip, current_meta.region, new_meta.region)
+	send_desktop_msg(msg, delay=3000)
+
+
 def ensure_connect(p, old_meta):
 	spawned_process_id = p.pid  # TODO: Ensure openvpn process still exists to avoid endless loop condition
 	current_meta = localinfo.get_meta()
