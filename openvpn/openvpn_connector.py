@@ -1,7 +1,6 @@
 """Launches vpn connection using NordVPN ovpn connection file. Supports passing optional arguments."""
-from tools.linux import send_desktop_msg
 from tools import localinfo
-import subprocess
+from tools import linux
 import time
 import os
 
@@ -12,28 +11,26 @@ def watchdog(vpn_meta):
 		time.sleep(15)
 		current_meta = localinfo.get_meta()
 	msg = "VPN DISCONNECTED! IP: {}=>{}; Region: {}=>{};".format(vpn_meta.ip, current_meta.ip, vpn_meta.region, current_meta.region)
-	send_desktop_msg(msg, delay=3000)
+	linux.send_desktop_msg(msg, delay=3000)
 
 
 def disconnect():
 	current_meta = localinfo.get_meta()
-	os.popen("gksudo killall openvpn")
-	os.popen("gksudo service networking restart")
-	time.sleep(5)
+	linux.execute_and_wait("gksudo killall openvpn")
+	linux.execute_and_wait("gksudo service networking restart")
 	new_meta = localinfo.get_meta()
 	msg = "VPN DISCONNECTED! IP: {}=>{}; Region: {}=>{};".format(current_meta.ip, new_meta.ip, current_meta.region, new_meta.region)
-	send_desktop_msg(msg, delay=3000)
+	linux.send_desktop_msg(msg, delay=3000)
 
 
-def ensure_connect(p, old_meta):
-	spawned_process_id = p.pid  # TODO: Ensure openvpn process still exists to avoid endless loop condition
+def ensure_connect(pid, old_meta):
 	current_meta = localinfo.get_meta()
 	while old_meta.ip == current_meta.ip:
 		time.sleep(3)
 		current_meta = localinfo.get_meta()
 	msg = "VPN CONNECTED! IP: {}=>{}; Region: {}=>{};".format(old_meta.ip, current_meta.ip, old_meta.region, current_meta.region)
-	send_desktop_msg(msg, delay=3000)
-	# watchdog(current_meta)  # TODO: re-connect automatically instead of just exiting.
+	linux.send_desktop_msg(msg, delay=3000)
+	# watchdog(current_meta)  # TODO: reconnect auto?
 
 
 def _get_formatted_sh_script(ovpn_config_file_path, args):
@@ -66,9 +63,10 @@ def get_ovpn_file_path(domain_name, config):
 def _process_openvpn_file(domain_name, config):
 	absolute_path = get_ovpn_file_path(domain_name=domain_name, config=config)
 	prepared_sh_script = _get_formatted_sh_script(ovpn_config_file_path=absolute_path, args=config["cli_args"])
-	return subprocess.Popen(prepared_sh_script, shell=True)
+	pid = linux.execute_no_wait(prepared_sh_script)
+	return pid
 
 
 def start_vpn_service(domain_name, config, old_meta):
-	process = _process_openvpn_file(domain_name, config)
-	ensure_connect(process, old_meta)
+	pid = _process_openvpn_file(domain_name, config)
+	ensure_connect(pid, old_meta)

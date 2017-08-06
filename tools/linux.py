@@ -1,3 +1,4 @@
+import subprocess
 import os
 
 
@@ -8,3 +9,15 @@ def send_desktop_msg(msg_string, delay=0):
 	"""
 	msg = 'notify-send "{}" -t {}'.format(msg_string, delay)
 	os.popen(msg)
+
+
+def execute_no_wait(command):
+	sp = subprocess.Popen("gksudo {}".format(command))
+	sp.communicate()
+	return sp.pid
+
+
+def execute_and_wait(command):
+	sp = subprocess.Popen("gksudo {}".format(command))
+	sp.communicate()
+	sp.wait()
