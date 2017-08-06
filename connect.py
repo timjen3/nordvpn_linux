@@ -35,13 +35,15 @@ def connect_vpn():
 		else:
 			logger.info("Connecting to server via vpn tunnel...\n\t" + target_server_stats)
 			openvpn_connector.start_vpn_service(server.domain, tool_config, SM.locale_data)
-			msg = "Started VPN service."
+			locale_info = get_meta()
+			msg = "IP:{}\nREGION:{}".format(locale_info.ip, locale_info.region)
 			return msg
 
 
 def disconnect_function():
 	openvpn_connector.disconnect()
-	msg = "Killed vpn and restarted networking service"
+	locale_info = get_meta()
+	msg = "IP:{}\nREGION:{}".format(locale_info.ip, locale_info.region)
 	return msg
 
 
