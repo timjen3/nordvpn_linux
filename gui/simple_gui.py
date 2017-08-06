@@ -18,7 +18,7 @@ class MsgFrame(FrameBase):
 		tkinter.Label(self, text="Connect / Disconnect VPN", font=(None, 20)).grid(row=0, column=0, columnspan=4)
 		self.msg_var = tkinter.StringVar()
 		self.msg_var.set(start_text)
-		tkinter.Label(self, textvariable=self.msg_var, font=(None, 16)).grid(row=1, column=0, columnspan=4)
+		tkinter.Label(self, borderwidth=2, relief="groove", textvariable=self.msg_var, font=(None, 16)).grid(row=1, column=0, sticky=tkinter.EW, columnspan=4)
 		self.place_me()
 
 
