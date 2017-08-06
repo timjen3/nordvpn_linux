@@ -1,6 +1,6 @@
 [Desktop Entry]
 Name=NordVPN Connector
-Exec=sh -c 'cd /usr/src/nordvpn_linux && clear && gksudo python3 connect.py'
+Exec=sh -c 'cd /usr/src/nordvpn_linux && python3 connect.py'
 Icon=/usr/src/nordvpn_linux/content/net.png
 Terminal=false
 Type=Application

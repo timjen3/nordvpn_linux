@@ -10,11 +10,14 @@ Not sure the whole list, but I am curious if "Netflix" will actually work with N
 
 3. openvpn command line arguments can be put into tool.json as well. There are some defaults in there.
 
-4. trying to get it to run with command line only on ubuntu 16.04 and it's a real pain. It works fine if the .desktop application is written with terminal=True and EXEC=sudo ... but I want to eliminate the terminal.
-
 # Prerequesites
 
 Added a script called prereqs.sh that is untested and will require some tinkering. But it's real simple stuff so don't feel too stressed.
+
+Trying my best to get rid of the terminal window. The only way I've been able to do it is to add my user to the vpnusers group and add this line to /etc/sudoers:
+%vpnusers ALL = NOPASSWD: /usr/sbin/openvpn
+
+WARNING: Be extremely careful with the sudoers file. If you mess this file up you will have to go into linux recovery mode to fix the file1!!
 
 # Notes
 

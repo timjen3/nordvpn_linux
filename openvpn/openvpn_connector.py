@@ -37,7 +37,7 @@ def ensure_connect(p, old_meta):
 
 
 def _get_formatted_sh_script(ovpn_config_file_path, args):
-	base_command = "sudo openvpn"
+	base_command = "sudo openvpn --cd {}".format(os.environ["APPLICATION_ROOT"])
 	user_specified_config_target = "--config" in [arg for arg in args]
 	if user_specified_config_target:
 		openvpn_connect_sh = "{} {}".format(

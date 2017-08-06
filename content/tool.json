@@ -3,9 +3,9 @@
   "max_load": 40,
   "cli_args": [
     "--resolv-retry 3",
-    "--auth-user-pass /usr/src/nordvpn_linux/auth.txt",
+    "--auth-user-pass auth.txt",
     "--ping-exit 180 --inactive 3600 --ping 30",
-    "--log /var/log/nordvpn_linux.log"
+    "--log /usr/src/nordvpn_linux/application.log"
   ],
   "connect": "udp",
   "max_response_time": 80,
