@@ -1,26 +1,31 @@
 """Launches vpn connection using NordVPN ovpn connection file. Supports passing optional arguments."""
 from tools.linux import send_desktop_msg
 from tools import localinfo
-from copy import copy
 import subprocess
 import time
 import os
 
 
-def sentry(p, old_meta):
-	spawned_process_id = p.pid  # TODO: ensure openvpn process still exists!
+def watchdog(vpn_meta):
 	current_meta = localinfo.get_meta()
-	while old_meta.ip == current_meta.ip:
-		time.sleep(3)
-		current_meta = localinfo.get_meta()
-	vpn_meta = copy(current_meta)
-	msg = "VPN CONNECTED! IP: {}=>{}; Region: {}=>{};".format(old_meta.ip, current_meta.ip, old_meta.region, current_meta.region)
-	send_desktop_msg(msg, delay=3000)
 	while current_meta.ip == vpn_meta.ip:
 		time.sleep(15)
 		current_meta = localinfo.get_meta()
 	msg = "VPN DISCONNECTED! IP: {}=>{}; Region: {}=>{};".format(vpn_meta.ip, current_meta.ip, vpn_meta.region, current_meta.region)
 	send_desktop_msg(msg, delay=3000)
+
+
+def ensure_connect(p, old_meta):
+	spawned_process_id = p.pid  # TODO: Ensure openvpn process still exists to avoid endless loop condition
+	current_meta = localinfo.get_meta()
+	while old_meta.ip == current_meta.ip:
+		time.sleep(3)
+		current_meta = localinfo.get_meta()
+	msg = "VPN CONNECTED! IP: {}=>{}; Region: {}=>{};".format(old_meta.ip, current_meta.ip, old_meta.region, current_meta.region)
+	send_desktop_msg(msg, delay=3000)
+	import sys
+	sys.exit()
+	# watchdog(current_meta)  # TODO: re-connect automatically instead of just exiting.
 
 
 def _get_formatted_sh_script(ovpn_config_file_path, args):
@@ -59,4 +64,4 @@ def _process_openvpn_file(domain_name, config):
 def start_vpn_service(domain_name, config, old_meta):
 	os.popen("sudo killall openvpn")
 	process = _process_openvpn_file(domain_name, config)
-	sentry(process, old_meta)
+	ensure_connect(process, old_meta)
