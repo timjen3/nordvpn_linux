@@ -4,9 +4,10 @@ from tools import localinfo
 import subprocess
 import time
 import os
+import sys
 
 
-def get_new_ip_meta(old_ip):
+def sentry(old_ip):
 	current_ip = localinfo.get_ip()
 	send_desktop_msg("got this far...")
 	while old_ip == current_ip:
@@ -15,17 +16,25 @@ def get_new_ip_meta(old_ip):
 	send_desktop_msg("got this far...")
 	msg = "VPN CONNECTED: {}".format(current_ip)
 	send_desktop_msg("VPN CONNECTED: {}'".format(msg))
+	sys.exit()
 
 
 def _get_formatted_sh_script(ovpn_config_file_path, args):
-	for arg in args:
-		if "--config " in arg:
-			return "sudo openvpn {}".format(" ".join(arg for arg in args))  # User specifies specific --config
-	openvpn_connect_sh = "sudo openvpn --config {} {}".format(
-		ovpn_config_file_path,
-		" ".join(arg for arg in args)
-	)
-	return openvpn_connect_sh
+	base_command = "sudo openvpn"
+	user_specified_config_target = "--config" in [arg for arg in args]
+	if user_specified_config_target:
+		openvpn_connect_sh = "{} {}".format(
+			base_command,
+			" ".join(arg for arg in args)
+		)
+	else:
+		openvpn_connect_sh = "{} --config {} {}".format(
+			base_command,
+			ovpn_config_file_path,
+			" ".join(arg for arg in args)
+		)
+	background_command = "nohup {} &".format(openvpn_connect_sh)
+	return background_command
 
 
 def get_ovpn_file_path(domain_name, config):
@@ -53,4 +62,4 @@ def start_vpn_service(domain_name, config, old_meta):
 	actually worked! Every damn time..."""
 	old_ip = old_meta.ip
 	_process_openvpn_file(domain_name, config)
-	get_new_ip_meta(old_ip)
+	sentry(old_ip)
