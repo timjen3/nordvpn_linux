@@ -60,6 +60,5 @@ def _process_openvpn_file(domain_name, config):
 
 
 def start_vpn_service(domain_name, config, old_meta):
-	os.popen("sudo killall openvpn")
 	process = _process_openvpn_file(domain_name, config)
 	ensure_connect(process, old_meta)
