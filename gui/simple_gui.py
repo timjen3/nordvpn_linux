@@ -16,17 +16,17 @@ class MsgFrame(FrameBase):
 	def __init__(self, root):
 		super().__init__(root)
 		self.msg_var = tkinter.StringVar()
-		tkinter.Label(self, textvariable=self.msg_var).grid(row=0, column=0, columnspan=4)
-		self.e = tkinter.Entry(self).grid(row=1, column=0, sticky=tkinter.EW)
+		self.msg_var.set("connect / disconnect vpn...")
+		tkinter.Label(self, textvariable=self.msg_var, font=(None, 18)).grid(row=0, column=0, columnspan=4)
 		self.place_me()
 
 
 class VpnManager(FrameBase):
 	def __init__(self, root, onfun, offfun, msg_box):
 		super().__init__(root)
-		self.onbutton = tkinter.Button(self, text="On", command=lambda: self.before_do(onfun))
+		self.onbutton = tkinter.Button(self, text="CONNECT", font=(None, 18), command=lambda: self.before_do(onfun))
 		self.onbutton.grid(row=0, column=0, sticky=tkinter.EW)
-		self.offbutton = tkinter.Button(self, text="Off", command=lambda: self.before_do(offfun))
+		self.offbutton = tkinter.Button(self, text="DISCONNECT", font=(None, 18), command=lambda: self.before_do(offfun))
 		self.offbutton.grid(row=0, column=1, sticky=tkinter.EW)
 		self.msg_box = msg_box
 		self.place_me()
