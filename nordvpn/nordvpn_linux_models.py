@@ -26,9 +26,9 @@ class Server:
 
 
 class LocaleInfo:
-	def __init__(self, **kwargs):
+	def __init__(self, ip, **kwargs):
+		self.ip = ip
 		my_attributes = [
-			"ip",
 			"country",
 			"zipcode",
 			"latitude",
