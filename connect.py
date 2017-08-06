@@ -2,6 +2,7 @@
 from nordvpn.nordvpn_connector import ServerManager
 from tools.speed_test import get_avg_ping
 from openvpn import openvpn_connector
+from tools.localinfo import get_meta
 import logging
 import json
 import os
@@ -51,4 +52,6 @@ if __name__ == "__main__":
 	with open(config_path, "r") as fp:
 		tool_config = json.loads(fp.read())
 
-	start_gui(start_fun=connect_vpn, stop_fun=disconnect_function)
+	locale_info = get_meta()
+	local_msg = "IP:{}\nREGION:{}".format(locale_info.ip, locale_info.region)
+	start_gui(start_fun=connect_vpn, stop_fun=disconnect_function, locale_info=local_msg)
