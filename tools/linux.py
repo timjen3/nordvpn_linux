@@ -12,12 +12,12 @@ def send_desktop_msg(msg_string, delay=0):
 
 
 def execute_no_wait(command):
-	sp = subprocess.Popen("gksudo {}".format(command))
+	sp = subprocess.Popen(command, shell=True)
 	sp.communicate()
 	return sp.pid
 
 
 def execute_and_wait(command):
-	sp = subprocess.Popen("gksudo {}".format(command))
+	sp = subprocess.Popen(command, shell=True)
 	sp.communicate()
 	sp.wait()
