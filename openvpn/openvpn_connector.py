@@ -15,12 +15,12 @@ def sentry(p, old_meta):
 		current_meta = localinfo.get_meta()
 	vpn_meta = copy(current_meta)
 	msg = "VPN CONNECTED! IP: {}=>{}; Region: {}=>{};".format(old_meta.ip, current_meta.ip, old_meta.region, current_meta.region)
-	send_desktop_msg(msg, delay=0)
+	send_desktop_msg(msg, delay=3000)
 	while current_meta.ip == vpn_meta.ip:
 		time.sleep(15)
 		current_meta = localinfo.get_meta()
 	msg = "VPN DISCONNECTED! IP: {}=>{}; Region: {}=>{};".format(vpn_meta.ip, current_meta.ip, vpn_meta.region, current_meta.region)
-	send_desktop_msg(msg, delay=0)
+	send_desktop_msg(msg, delay=3000)
 
 
 def _get_formatted_sh_script(ovpn_config_file_path, args):
