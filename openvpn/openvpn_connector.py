@@ -12,7 +12,7 @@ def sentry(old_meta):
 	while old_meta.ip == current_meta.ip:
 		time.sleep(5)
 		current_meta = localinfo.get_meta()
-	msg = "VPN CONNECTED! IP: {}=>{}; Region: {}=>{};".format(current_meta.ip, old_meta.ip, old_meta.region, current_meta.region)
+	msg = "VPN CONNECTED! IP: {}=>{}; Region: {}=>{};".format(old_meta.ip, current_meta.ip, old_meta.region, current_meta.region)
 	send_desktop_msg(msg)
 	sys.exit()
 
