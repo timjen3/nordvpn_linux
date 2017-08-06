@@ -7,22 +7,21 @@ import time
 import os
 
 
-def sentry(old_meta):
-	"""Notifies when connected and monitors to ensure remains connected. If disconnected notifies desktop and returns.
-	:param old_meta: locale info from before connecting to vpn.
-	"""
+def sentry(pid, old_meta):
+	print(pid)
 	current_meta = localinfo.get_meta()
-	while old_meta.ip == current_meta.ip:
+	pid_exists = True  # is the openvpn process still running?
+	while pid_exists and old_meta.ip == current_meta.ip:
 		time.sleep(5)
-		current_meta = localinfo.get_meta()
+	current_meta = localinfo.get_meta()
 	vpn_meta = copy(current_meta)
 	msg = "VPN CONNECTED! IP: {}=>{}; Region: {}=>{};".format(old_meta.ip, current_meta.ip, old_meta.region, current_meta.region)
-	send_desktop_msg(msg, delay=3000)
+	send_desktop_msg(msg, delay=0)
 	while current_meta.ip == vpn_meta.ip:
 		time.sleep(15)
 		current_meta = localinfo.get_meta()
 	msg = "VPN DISCONNECTED! IP: {}=>{}; Region: {}=>{};".format(vpn_meta.ip, current_meta.ip, vpn_meta.region, current_meta.region)
-	send_desktop_msg(msg, delay=3000)
+	send_desktop_msg(msg, delay=0)
 
 
 def _get_formatted_sh_script(ovpn_config_file_path, args):
@@ -56,10 +55,10 @@ def _process_openvpn_file(domain_name, config):
 	absolute_path = get_ovpn_file_path(domain_name=domain_name, config=config)
 	prepared_sh_script = _get_formatted_sh_script(ovpn_config_file_path=absolute_path, args=config["cli_args"])
 	ps = subprocess.Popen(prepared_sh_script, shell=True)
-	ps.communicate()
+	return ps.communicate()
 
 
 def start_vpn_service(domain_name, config, old_meta):
 	os.popen("sudo killall openvpn")
-	_process_openvpn_file(domain_name, config)
-	sentry(old_meta)
+	pid = _process_openvpn_file(domain_name, config)
+	sentry(pid, old_meta)
