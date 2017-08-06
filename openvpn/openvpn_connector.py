@@ -1,22 +1,19 @@
-"""Launches vpn connection using NordVPN ovpn connection file. Supports passing optional arguments.
-Does some fancy threading to output new connection info after getting connected."""
+"""Launches vpn connection using NordVPN ovpn connection file. Supports passing optional arguments."""
 from tools.linux import send_desktop_msg
 from tools import localinfo
 import subprocess
-import threading
 import time
 import os
 
 
 def get_new_ip_meta(old_meta):
 	current_meta = localinfo.get_meta()
-	send_desktop_msg("trying in a sec.")
+	send_desktop_msg("got this far...")
 	while old_meta.ip == current_meta.ip:
 		time.sleep(5)
 		current_meta = localinfo.get_meta()
 	send_desktop_msg("got this far...")
-	msg = " ".join([
-		"Old IP: {}".format(old_meta.ip),
+	msg = ";".join([
 		"New IP: {}".format(current_meta.ip),
 		"Country: {}".format(current_meta.country),
 		"Zipcode: {}".format(current_meta.zipcode),
@@ -52,6 +49,7 @@ def _process_openvpn_file(domain_name, config):
 	prepared_sh_script = _get_formatted_sh_script(ovpn_config_file_path=absolute_path, args=config["cli_args"])
 	ps = subprocess.Popen(prepared_sh_script, shell=True)
 	ps.communicate()
+	print("started vpn....")
 
 
 # TODO: Add a kill switch please!!!
@@ -60,10 +58,5 @@ def _process_openvpn_file(domain_name, config):
 def start_vpn_service(domain_name, config, old_meta):
 	"""Connect vpn and output new connection information. B/c the first thing you want to see is whether it
 	actually worked! Every damn time..."""
-	connect_vpn_fun = lambda d, c: _process_openvpn_file(d, c)
-	connect_vpn = threading.Thread(target=connect_vpn_fun(domain_name, config), daemon=False)
-	output_connection_fun = lambda m: get_new_ip_meta(m)
-	output_connection_info = threading.Thread(target=output_connection_fun(old_meta), daemon=True)
-	output_connection_info.start()
-	connect_vpn.start()
-	output_connection_info.join()
+	_process_openvpn_file(domain_name, config)
+	get_new_ip_meta(old_meta)
