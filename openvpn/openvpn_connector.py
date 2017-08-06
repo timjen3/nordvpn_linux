@@ -1,20 +1,28 @@
 """Launches vpn connection using NordVPN ovpn connection file. Supports passing optional arguments."""
 from tools.linux import send_desktop_msg
 from tools import localinfo
+from copy import copy
 import subprocess
 import time
 import os
-import sys
 
 
 def sentry(old_meta):
+	"""Notifies when connected and monitors to ensure remains connected. If disconnected notifies desktop and returns.
+	:param old_meta: locale info from before connecting to vpn.
+	"""
 	current_meta = localinfo.get_meta()
 	while old_meta.ip == current_meta.ip:
 		time.sleep(5)
 		current_meta = localinfo.get_meta()
+	vpn_meta = copy(current_meta)
 	msg = "VPN CONNECTED! IP: {}=>{}; Region: {}=>{};".format(old_meta.ip, current_meta.ip, old_meta.region, current_meta.region)
-	send_desktop_msg(msg)
-	sys.exit()
+	send_desktop_msg(msg, delay=3000)
+	while current_meta.ip == vpn_meta.ip:
+		time.sleep(15)
+		current_meta = localinfo.get_meta()
+	msg = "VPN DISCONNECTED! IP: {}=>{}; Region: {}=>{};".format(vpn_meta.ip, current_meta.ip, vpn_meta.region, current_meta.region)
+	send_desktop_msg(msg, delay=3000)
 
 
 def _get_formatted_sh_script(ovpn_config_file_path, args):

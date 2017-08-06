@@ -7,7 +7,6 @@ import logging
 
 
 def should_refresh(last_refresh, refresh_interval=timedelta(hours=1)):
-	"""If you want to avoid pulling data increase refresh_interval to use cache longer."""
 	logger = logging.getLogger(__name__)
 	if last_refresh is None:
 		return True
