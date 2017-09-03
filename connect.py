@@ -37,9 +37,7 @@ def connect_vpn():
 			logger.debug("Skipping a server because it is responding too slowly:\n\t" + target_server_stats)
 		else:
 			logger.info("Connecting to server via vpn tunnel...\n\t" + target_server_stats)
-			pid = openvpn_connector.start_vpn_service(server.domain, tool_config, SM.locale_data)
-			with open("content/vpn.pid", "w") as fp:
-				fp.write(str(pid or -1))
+			openvpn_connector.start_vpn_service(server.domain, tool_config, SM.locale_data)
 			t = check_alive()
 			return t.result_queue.get()
 
@@ -47,7 +45,7 @@ def connect_vpn():
 @threaded
 def disconnect_function():
 	openvpn_connector.disconnect()
-	t = check_alive()
+	t = check_alive(tool_config)
 	return t.result_queue.get()
 
 
@@ -55,7 +53,7 @@ def disconnect_function():
 def check_alive():
 	"""Checks if process defined in pid file is alive."""
 	is_alive = False
-	if os.path.exists("content/vpn.pid"):
+	if "pid_file" in tool_config and os.path.exists(tool_config["pid_file"]):
 		pid = int(open("content/vpn.pid", "r").read())
 		is_alive = pid_exists(pid)
 	locale_info = get_meta()

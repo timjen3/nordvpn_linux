@@ -32,7 +32,6 @@ def ensure_connect(pid, old_meta):
 	current_meta = localinfo.get_meta()
 	while pid_exists(pid) and old_meta.ip == current_meta.ip:
 		time.sleep(3)
-		print("still exists!? {}".format(pid))
 		current_meta = localinfo.get_meta()
 	if old_meta.ip != current_meta.ip:
 		msg = "VPN CONNECTED! IP: {}=>{}; Region: {}=>{};".format(old_meta.ip, current_meta.ip, old_meta.region, current_meta.region)
@@ -42,7 +41,8 @@ def ensure_connect(pid, old_meta):
 	# watchdog(current_meta)  # TODO: reconnect auto?
 
 
-def _get_formatted_sh_script(ovpn_config_file_path, args):
+def _get_formatted_sh_script(ovpn_config_file_path, config):
+	args = config["cli_args"]
 	base_command = "sudo openvpn --cd {}".format(os.environ["APPLICATION_ROOT"])
 	user_specified_config_target = "--config" in [arg for arg in args]
 	if user_specified_config_target:
@@ -56,8 +56,11 @@ def _get_formatted_sh_script(ovpn_config_file_path, args):
 			ovpn_config_file_path,
 			" ".join(arg for arg in args)
 		)
-	background_command = "nohup {} &".format(openvpn_connect_sh)
-	return background_command
+	if "pid_file" not in config:
+		return "nohup {} &".format(openvpn_connect_sh)
+	else:
+		pidarg = "--writepid {}".format(config["pid_file"])
+		return "nohup {} {} &".format(openvpn_connect_sh, pidarg)
 
 
 def get_ovpn_file_path(domain_name, config):
@@ -71,7 +74,7 @@ def get_ovpn_file_path(domain_name, config):
 
 def _process_openvpn_file(domain_name, config):
 	absolute_path = get_ovpn_file_path(domain_name=domain_name, config=config)
-	prepared_sh_script = _get_formatted_sh_script(ovpn_config_file_path=absolute_path, args=config["cli_args"])
+	prepared_sh_script = _get_formatted_sh_script(ovpn_config_file_path=absolute_path, config=config)
 	pid = linux.execute_no_wait(prepared_sh_script)
 	return pid
 
