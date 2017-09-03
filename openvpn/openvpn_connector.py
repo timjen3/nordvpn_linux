@@ -48,11 +48,8 @@ def _get_formatted_sh_script(ovpn_config_file_path, config):
 			ovpn_config_file_path,
 			" ".join(arg for arg in args)
 		)
-	if "pid_file" not in config:
-		return "nohup {} &".format(openvpn_connect_sh)
-	else:
-		pidarg = "--writepid {}".format(config["pid_file"])
-		return "nohup {} {} &".format(openvpn_connect_sh, pidarg)
+	pidarg = "--writepid {}".format(config["pid_file"])
+	return "{} {}".format(openvpn_connect_sh, pidarg)
 
 
 def get_ovpn_file_path(domain_name, config):
