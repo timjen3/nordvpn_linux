@@ -47,13 +47,13 @@ class VpnManager(FrameBase):
 			return
 		logger = logging.getLogger(__name__)
 		logger.info("Async execution_text: {}".format(execution_text))
-		self.onbutton.config(state="disabled")
-		self.offbutton.config(state="disabled")
-		self.alivebutton.config(state="disabled")
-		self.progress_form.reset()
-		self._running = True
 
 		try:
+			self.onbutton.config(state="disabled")
+			self.offbutton.config(state="disabled")
+			self.alivebutton.config(state="disabled")
+			self.progress_form.reset()
+			self._running = True
 			t = fun()  # async!
 			self.msg_box.set(execution_text)
 			while t.is_alive():
