@@ -2,17 +2,24 @@
 from urllib3.util import parse_url
 import http.client
 import zipfile
+import logging
 import json
 import io
 
 
 def get_request(scheme, host, endpoint, method, headers):
-	if scheme == "https":
-		connection = http.client.HTTPSConnection(host, timeout=5)
-	else:
-		connection = http.client.HTTPConnection(host, timeout=5)
-	connection.request(method=method, url="{}".format(endpoint), headers=headers)
-	raw_response = connection.getresponse()
+	raw_response = "REQUEST FAILED"
+	for retry in range(0, 3):
+		try:
+			if scheme == "https":
+				connection = http.client.HTTPSConnection(host, timeout=5)
+			else:
+				connection = http.client.HTTPConnection(host, timeout=5)
+			connection.request(method=method, url="{}".format(endpoint), headers=headers)
+			raw_response = connection.getresponse()
+		except:
+			logger = logging.getLogger(__name__)
+			logger.debug("Connection attempt {} to host failed...".format(retry))
 	return raw_response
 
 
