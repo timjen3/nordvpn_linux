@@ -48,14 +48,20 @@ def disconnect_function():
 @threaded
 def check_alive():
 	"""Checks if process defined in pid file is alive."""
+	# Added logger to see what's going on here on my linux machine. Seems to work, but can't tell pid is alive.
+	logger = logging.getLogger(__name__)
 	is_alive = False
 	if "pid_file" in tool_config and os.path.exists(tool_config["pid_file"]):
-		pid = open(tool_config["pid_file"], "r").read()
-		if pid.isdigit():
-			pid = int(pid)
-		else:
-			pid = -1
-		is_alive = pid_exists(pid)
+		logger.info(tool_config["pid_file"])
+		with open(tool_config["pid_file"], "r") as fp:
+			pid = fp.read()
+			logger.info(pid)
+			if pid.isdigit():
+				pid = int(pid)
+			else:
+				pid = -1
+			logger.info("{} is type: {}".format(pid, type(pid)))
+			is_alive = pid_exists(pid)
 	locale_info = get_meta()
 	return is_alive, "IP:{}\nREGION:{}".format(locale_info.ip, locale_info.region)
 
