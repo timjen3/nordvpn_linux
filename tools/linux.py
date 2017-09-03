@@ -41,7 +41,7 @@ def execute_no_wait(command):
 	try:
 		sp = subprocess.Popen(command, shell=True)
 	except:
-		return 0
+		return -1
 	return sp.pid
 
 
@@ -49,6 +49,6 @@ def execute_and_wait(command, timeout=5):
 	try:
 		sp = subprocess.Popen(command, shell=True)
 	except:
-		return 0
+		return -1
 	sp.communicate()
 	sp.wait(timeout=timeout)
