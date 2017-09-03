@@ -79,7 +79,7 @@ class VpnManager(FrameBase):
 			logger.info("Updating message box...")
 			self.msg_box.set(msg)
 		except:
-			logger.info("Error executing async function in gui!\n{}".format(traceback.format_exc))
+			logger.info("Error executing async function in gui!\n{}".format(traceback.format_exc()))
 			self.msg_box.set("Encountered error: {}\n".format(traceback.format_exc()))
 			self.after(3000, self.msg_box.set("Unknown state."))
 			self.offbutton.config(state="enabled")
