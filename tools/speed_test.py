@@ -1,11 +1,13 @@
 import subprocess
+import os
 
 
 def get_avg_ping(host):
 	_num_pings = 5
 	total_response_time = 0
 	host = host.replace("https", "").replace("http", "").replace("://", "")
-	ping = subprocess.Popen(["ping", "-c", str(_num_pings), host], stdout=subprocess.PIPE)
+	p2 = {"nt": "-n", "posix": "-c"}
+	ping = subprocess.Popen(["ping", p2[os.name], str(_num_pings), host], stdout=subprocess.PIPE)
 	for line in ping.stdout.readlines():
 		line_as_string = line.decode("utf-8")
 		if "time=" in line_as_string and "ms" in line_as_string:

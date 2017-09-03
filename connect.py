@@ -2,6 +2,7 @@
 from nordvpn.nordvpn_connector import ServerManager
 from tools.speed_test import get_avg_ping
 from openvpn import openvpn_connector
+from tools.threading import threaded
 from tools.localinfo import get_meta
 import logging
 import json
@@ -13,6 +14,7 @@ logging.basicConfig(
 )
 
 
+@threaded
 def connect_vpn():
 	os.environ["APPLICATION_ROOT"] = os.getcwd()
 	logger = logging.getLogger("NORDVPNLINUX")
@@ -40,6 +42,7 @@ def connect_vpn():
 			return msg
 
 
+@threaded
 def disconnect_function():
 	openvpn_connector.disconnect()
 	locale_info = get_meta()

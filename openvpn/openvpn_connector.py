@@ -1,4 +1,5 @@
 """Launches vpn connection using NordVPN ovpn connection file. Supports passing optional arguments."""
+from tools.linux import pid_exists
 from tools import localinfo
 from tools import linux
 import time
@@ -25,10 +26,14 @@ def disconnect():
 
 def ensure_connect(pid, old_meta):
 	current_meta = localinfo.get_meta()
-	while old_meta.ip == current_meta.ip:
+	while pid_exists(pid) and old_meta.ip == current_meta.ip:
 		time.sleep(3)
+		print("still exists!?")
 		current_meta = localinfo.get_meta()
-	msg = "VPN CONNECTED! IP: {}=>{}; Region: {}=>{};".format(old_meta.ip, current_meta.ip, old_meta.region, current_meta.region)
+	if old_meta.ip != current_meta.ip:
+		msg = "VPN CONNECTED! IP: {}=>{}; Region: {}=>{};".format(old_meta.ip, current_meta.ip, old_meta.region, current_meta.region)
+	else:
+		msg = "VPN FAILED TO CONNECT! IP: {}=>{}; Region: {}=>{};".format(old_meta.ip, current_meta.ip, old_meta.region, current_meta.region)
 	linux.send_desktop_msg(msg, delay=3000)
 	# watchdog(current_meta)  # TODO: reconnect auto?
 
