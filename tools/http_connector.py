@@ -15,13 +15,11 @@ def get_request(scheme, host, endpoint, method, headers):
 				connection = http.client.HTTPSConnection(host, timeout=5)
 			else:
 				connection = http.client.HTTPConnection(host, timeout=5)
-			connection.request(method=method, url="{}".format(endpoint), headers=headers)
+			connection.request(method=method, url=endpoint, headers=headers)
 			raw_response = connection.getresponse()
+			return raw_response
 		except:
-			logger = logging.getLogger(__name__)
-			logger.debug("Connection attempt {} to host '{}' failed...".format(retry, host))
-		finally:
-			connection.close()
+			print("Connection attempt {} to host '{}' failed...".format(retry, host))
 	return raw_response
 
 
@@ -42,7 +40,7 @@ def get_text(url):
 		"Connection": "keep-alive",
 	}
 	raw_response = _explode_and_get(url=url, headers=headers)
-	if raw_response is None:
+	if not raw_response:
 		return "?"
 	return raw_response.decode("utf-8")
 
@@ -54,7 +52,7 @@ def get_json(url):
 		"Connection": "keep-alive",
 	}
 	raw_response = _explode_and_get(url=url, headers=headers)
-	if raw_response is None:
+	if not raw_response:
 		return {}
 	json_string = raw_response.decode("utf-8")
 	return json.loads(json_string)
@@ -67,7 +65,7 @@ def get_zip_file(url):
 		"Connection": "keep-alive",
 	}
 	raw_response = _explode_and_get(url=url, headers=headers)
-	if raw_response is None:
+	if not raw_response:
 		return None
 	fp = io.BytesIO(raw_response)
 	return zipfile.ZipFile(file=fp)

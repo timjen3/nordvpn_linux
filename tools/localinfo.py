@@ -18,7 +18,9 @@ def get_meta2():
 
 
 def get_ip():
-	return get_text('https://api.ipify.org')
+	current_ip = get_text('https://api.ipify.org')
+	print(current_ip)
+	return current_ip
 
 
 def get_meta():
