@@ -67,7 +67,7 @@ class VpnManager(FrameBase):
 			}[status]()
 			self.msg_box.set(msg)
 			{
-				True: lambda: self.onbutton.config(state="enabled"),
+				True: lambda: self.offbutton.config(state="enabled"),
 				False: lambda: self.onbutton.config(state="enabled")
 			}[status]()
 			self.alivebutton.config(state="enabled")
