@@ -11,32 +11,35 @@ import os
 def watchdog(vpn_meta):
 	# TODO: Here's an idea... 1. start watchdog in new thread and 2. use sys.argv to start the vpn back up if it dies.
 	# 		Then can create a systemd service.
-	current_meta = localinfo.get_meta()
-	while current_meta.ip == vpn_meta.ip:
+	current_ip = localinfo.get_ip()
+	# TODO: Check if openvpn is running instead of relying on api.
+	while vpn_meta.ip == current_ip:
 		time.sleep(60)
-		current_meta = localinfo.get_meta()
+		current_meta = localinfo.get_meta2()
 	msg = "VPN DISCONNECTED! IP: {}=>{}; Region: {}=>{};".format(vpn_meta.ip, current_meta.ip, vpn_meta.region, current_meta.region)
 	linux.send_desktop_msg(msg, delay=3000)
 
 
 def disconnect():
-	current_meta = localinfo.get_meta()
-	linux.execute_and_wait("gksudo killall openvpn")
-	linux.execute_and_wait("gksudo service networking restart")
-	new_meta = localinfo.get_meta()
+	current_meta = localinfo.get_meta2()
+	linux.execute_and_wait("gksudo killall openvpn", timeout=60)
+	linux.execute_and_wait("gksudo service networking restart", timeout=60)
+	new_meta = localinfo.get_meta2()
 	msg = "VPN DISCONNECTED! IP: {}=>{}; Region: {}=>{};".format(current_meta.ip, new_meta.ip, current_meta.region, new_meta.region)
 	linux.send_desktop_msg(msg, delay=3000)
 
 
 def ensure_connect(pid, old_meta):
-	current_meta = localinfo.get_meta()
-	while pid_exists(pid) and old_meta.ip == current_meta.ip:
-		time.sleep(3)
-		current_meta = localinfo.get_meta()
-	if old_meta.ip != current_meta.ip:
-		msg = "VPN CONNECTED! IP: {}=>{}; Region: {}=>{};".format(old_meta.ip, current_meta.ip, old_meta.region, current_meta.region)
+	current_ip = localinfo.get_ip()
+	while pid_exists(pid):  # and old_meta.ip == current_meta.ip:
+		time.sleep(10)
+		current_ip = localinfo.get_ip()
+	if old_meta.ip != current_ip:
+		new_meta = localinfo.get_meta2()
+		msg = "VPN CONNECTED! IP: {}; Region: {}; Dns: {}; DnsGeo: {};".format(new_meta.ip, new_meta.ipgeo, new_meta.dnsip, new_meta.dnsgeo)
 	else:
-		msg = "VPN FAILED TO CONNECT! IP: {}=>{}; Region: {}=>{};".format(old_meta.ip, current_meta.ip, old_meta.region, current_meta.region)
+		msg = "VPN FAILED TO CONNECT! IP: {}; Region: {};".format(current_ip, old_meta.region)
+	print(msg)
 	linux.send_desktop_msg(msg, delay=3000)
 	# watchdog(current_meta)  # TODO: reconnect auto?
 

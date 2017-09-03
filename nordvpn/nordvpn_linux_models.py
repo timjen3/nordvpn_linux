@@ -39,3 +39,16 @@ class LocaleInfo:
 		]
 		for attribute in my_attributes:
 			setattr(self, attribute, kwargs.get(attribute, None))
+
+
+class LocaleInfo2:
+	def __init__(self, ip, **kwargs):
+		self.ip = ip
+		my_attributes = [
+			"ip",
+			"ipgeo",
+			"dnsip",
+			"dnsgeo",
+		]
+		for attribute in my_attributes:
+			setattr(self, attribute, kwargs.get(attribute, None))
