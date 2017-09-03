@@ -39,7 +39,7 @@ def send_desktop_msg(msg_string, delay=0):
 
 def execute_no_wait(command):
 	try:
-		sp = subprocess.Popen(command)
+		sp = subprocess.Popen(command, shell=True)
 	except:
 		return 0
 	return sp.pid
