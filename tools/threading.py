@@ -16,7 +16,7 @@ def threaded(f, daemon=False):
 			ret = f(*args, **kwargs)
 			q.put(ret)
 		except:
-			return q.put((None, traceback.format_exc()))
+			return q.put((False, traceback.format_exc()))
 
 	def wrap(*args, **kwargs):
 		"""this is the function returned from the decorator. It fires off
