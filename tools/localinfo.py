@@ -10,10 +10,10 @@ def get_meta2():
 	random_string = str(uuid.uuid4()).replace("-", "")
 	ip_meta = get_json(url="http://{}.edns.ip-api.com/json".format(random_string))
 	return LocaleInfo2(
-		ip=ip_meta.get("dns", dict()).get("ip", ""),
-		ipgeo=ip_meta.get("dns", dict()).get("geo", ""),
-		dnsip=ip_meta.get("edns", dict()).get("ip", ""),
-		dnsgeo=ip_meta.get("edns", dict()).get("geo", ""),
+		dns_ip=ip_meta.get("dns", dict()).get("ip", ""),
+		dns_ip_geo=ip_meta.get("dns", dict()).get("geo", ""),
+		ip=ip_meta.get("edns", dict()).get("ip", ""),
+		ip_geo=ip_meta.get("edns", dict()).get("geo", ""),
 	)
 
 

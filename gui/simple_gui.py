@@ -4,6 +4,7 @@ import tkinter
 import logging
 __FORM_BACKGROUND_COLOR__ = "light gray"
 __MSG_BOX_BG_COLOR__ = "light green"
+__FORM_WIDTH__ = 325
 
 
 class FrameBase(tkinter.Frame):
@@ -20,12 +21,38 @@ class FrameBase(tkinter.Frame):
 class MsgFrame(FrameBase):
 	def __init__(self, root, start_text):
 		super().__init__(root, bg="white", height=200)
+		self.__MSG_BOX_WIDTH__ = 25
+		self.__MSG_BOX_ROWS__ = 12
 		self.msg_var = tkinter.StringVar()
-		self.msg_var.set(start_text)
-		title_label = ttk.Label(self, style="title.TLabel", text="Close at any time.")
-		main_msg = tkinter.Label(master=self, height=2, width=25, textvariable=self.msg_var, background=__MSG_BOX_BG_COLOR__, foreground="dark green", relief="sunken", justify="center", font=("courier", 16))
+		self.update_msg(start_text)
+		title_label = ttk.Label(self, style="title.TLabel", text="Connections persist if closed!")
+		self.main_msg = tkinter.Label(master=self, width=self.__MSG_BOX_WIDTH__, height=self.__MSG_BOX_ROWS__, textvariable=self.msg_var, background=__MSG_BOX_BG_COLOR__, foreground="dark green", relief="sunken", justify="left", font=("courier", 16))
 		title_label.grid(row=0)
-		main_msg.grid(row=1)
+		self.main_msg.grid(row=1, sticky=tkinter.EW)
+
+	def update_msg(self, msg):
+		"""I suck with gui stuff..implented a fixed-size hack for msgbox b/c couldn't find one i liked."""
+		from io import StringIO
+		size_spec = self.__MSG_BOX_WIDTH__ * self.__MSG_BOX_ROWS__
+		msg = msg.split("\n")
+		_out = ""
+		for _m in msg:
+			_line_prefix = ""
+			_msg_parts = _m.split(":")
+			if len(_msg_parts) > 1:
+				_out += "{}:\n".format(_msg_parts[0])
+				_m = "".join(_msg_parts[1:])
+				_line_prefix = "___"
+			_m = StringIO(_m)
+			while True:
+				chunk = _m.read(self.__MSG_BOX_WIDTH__ - len(_line_prefix))
+				if not chunk:
+					break
+				if len(chunk) + len(_line_prefix) < self.__MSG_BOX_WIDTH__:
+					chunk += " " * (self.__MSG_BOX_WIDTH__ - len(chunk))
+				_out += _line_prefix + chunk + "\n"
+			_out = _out[:size_spec]
+		self.msg_var.set(_out)
 
 
 class VpnManager(FrameBase):
@@ -55,7 +82,7 @@ class VpnManager(FrameBase):
 			self.alivebutton.config(state="disabled")
 			self.progress_form.reset()
 			t = fun()  # async!
-			self.msg_box.set(execution_text)
+			self.msg_box.update_msg(execution_text)
 			while t.is_alive():
 				self.progress_bar.step(1)
 				self.after(100, self.update())
@@ -69,11 +96,10 @@ class VpnManager(FrameBase):
 				False: lambda: self.onbutton.config(state="enabled")
 			}[status]()
 			self.alivebutton.config(state="enabled")
-			self.msg_box.set(msg)
+			self.msg_box.update_msg(msg)
 		except:
 			logger.error("Error executing async function in gui!\n{}".format(traceback.format_exc()))
-			self.msg_box.set("Encountered error: {}\n".format(traceback.format_exc()))
-			self.after(3000, self.msg_box.set("Unknown state."))
+			self.msg_box.update_msg("Encountered error; State unknown.\n".format(traceback.format_exc()))
 			self.offbutton.config(state="enabled")
 			self.onbutton.config(state="enabled")
 			self.alivebutton.config(state="enabled")
@@ -86,8 +112,8 @@ class VpnManager(FrameBase):
 class ProgressBar(FrameBase):
 	def __init__(self, root):
 		super().__init__(root)
-		self.failed_task = ttk.Progressbar(master=self, style="red.Horizontal.TProgressbar", length=330, orient="horizontal", mode="determinate")
-		self.progress = ttk.Progressbar(master=self, style="green.Horizontal.TProgressbar", length=330, orient="horizontal", mode="determinate")
+		self.failed_task = ttk.Progressbar(master=self, style="red.Horizontal.TProgressbar", length=__FORM_WIDTH__, orient="horizontal", mode="determinate")
+		self.progress = ttk.Progressbar(master=self, style="green.Horizontal.TProgressbar", length=__FORM_WIDTH__, orient="horizontal", mode="determinate")
 		self.failed_task.grid(row=0, column=0, sticky=tkinter.EW)
 		self.progress.grid(row=0, column=0, sticky=tkinter.EW)
 		self.progress.tkraise()
@@ -121,7 +147,7 @@ def start_gui(locale_info, start_fun, stop_fun, alive_fun=None):
 	tk.title("VPN Connector (NORDVPN)")
 	b = MsgFrame(tk, start_text=locale_info)
 	pb = ProgressBar(tk)
-	vm = VpnManager(tk, onfun=start_fun, offfun=stop_fun, alivefun=alive_fun, progress_bar=pb, msg_box=b.msg_var)
+	vm = VpnManager(tk, onfun=start_fun, offfun=stop_fun, alivefun=alive_fun, progress_bar=pb, msg_box=b)
 	b.place_me()
 	pb.place_me()
 	vm.place_me()

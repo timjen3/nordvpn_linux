@@ -1,4 +1,3 @@
-# TODO: Add a kill switch please!!!
 from job_runner import *
 import traceback
 import logging

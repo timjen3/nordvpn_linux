@@ -42,13 +42,12 @@ class LocaleInfo:
 
 
 class LocaleInfo2:
-	def __init__(self, ip, **kwargs):
-		self.ip = ip
+	def __init__(self, **kwargs):
 		my_attributes = [
 			"ip",
-			"ipgeo",
-			"dnsip",
-			"dnsgeo",
+			"ip_geo",
+			"dns_ip",
+			"dns_ip_geo",
 		]
 		for attribute in my_attributes:
 			setattr(self, attribute, kwargs.get(attribute, None))

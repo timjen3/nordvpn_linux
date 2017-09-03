@@ -10,10 +10,12 @@ import os
 
 @threaded
 def watchdog(vpn_meta):
+	# TODO: Get watchdog working and add option to gui!
 	# TODO: Here's an idea... 1. start watchdog in new thread and 2. use sys.argv to start the vpn back up if it dies.
 	# 		Then can create a systemd service.
 	current_ip = localinfo.get_ip()
 	# TODO: Check if openvpn is running instead of relying on api.
+	# TODO: After some initial investigation, a kill switch will be hard. Will investigate after other todo's.
 	current_meta = vpn_meta
 	while vpn_meta.ip == current_ip:
 		time.sleep(60)
