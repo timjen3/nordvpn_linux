@@ -33,22 +33,6 @@ def disconnect():
 	linux.send_desktop_msg(msg, delay=3000)
 
 
-def ensure_connect(pid, old_meta):
-	# current_ip = localinfo.get_ip()
-	logger = logging.getLogger(__name__)
-	logger.info("Waiting for vpn init process with pid '{}' to finish.".format(pid))
-	while pid_exists(pid):  # and old_meta.ip == current_meta.ip:
-		time.sleep(10)
-	current_ip = localinfo.get_ip()
-	if old_meta.ip != current_ip:
-		new_meta = localinfo.get_meta2()
-		msg = "VPN CONNECTED! IP: {}; Region: {}; Dns: {}; DnsGeo: {};".format(new_meta.ip, new_meta.ipgeo, new_meta.dnsip, new_meta.dnsgeo)
-	else:
-		msg = "VPN FAILED TO CONNECT! IP: {}; Region: {};".format(current_ip, old_meta.region)
-	linux.send_desktop_msg(msg, delay=3000)
-	# watchdog(current_meta)  # TODO: reconnect auto?
-
-
 def _get_formatted_sh_script(ovpn_config_file_path, config):
 	args = config["cli_args"]
 	base_command = "sudo openvpn --cd {}".format(os.environ["APPLICATION_ROOT"])
@@ -83,11 +67,18 @@ def get_ovpn_file_path(domain_name, config):
 def _process_openvpn_file(domain_name, config):
 	absolute_path = get_ovpn_file_path(domain_name=domain_name, config=config)
 	prepared_sh_script = _get_formatted_sh_script(ovpn_config_file_path=absolute_path, config=config)
-	pid = linux.execute_no_wait(prepared_sh_script)
-	return pid
+	return linux.execute_and_wait(prepared_sh_script, timeout=10)
 
 
 def start_vpn_service(domain_name, config, old_meta):
 	pid = _process_openvpn_file(domain_name, config)
-	ensure_connect(pid, old_meta)
-	return pid
+	current_ip = localinfo.get_ip()
+	if old_meta.ip != current_ip:
+		new_meta = localinfo.get_meta2()
+		msg = "VPN CONNECTED! IP: {}; Region: {}; Dns: {}; DnsGeo: {};".format(new_meta.ip, new_meta.ipgeo, new_meta.dnsip, new_meta.dnsgeo)
+	else:
+		if pid_exists(pid):
+			msg = "OPENVPN APPEARS TO BE STRUGGLING TO CONNECT! IP: {}; Region: {};".format(current_ip, old_meta.region)
+		else:
+			msg = "VPN FAILED TO CONNECT! IP: {}; Region: {};".format(current_ip, old_meta.region)
+	linux.send_desktop_msg(msg, delay=3000)
