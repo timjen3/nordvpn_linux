@@ -1,5 +1,9 @@
-"""https://stackoverflow.com/questions/6893968/how-to-get-the-return-value-from-a-thread-in-python"""
+"""
+	Code sourced from here, added error handling to it.
+	https://stackoverflow.com/questions/6893968/how-to-get-the-return-value-from-a-thread-in-python
+"""
 import threading
+import traceback
 import queue
 
 
@@ -8,8 +12,11 @@ def threaded(f, daemon=False):
 	def wrapped_f(q, *args, **kwargs):
 		"""this function calls the decorated function and puts the
 		result in a queue"""
-		ret = f(*args, **kwargs)
-		q.put(ret)
+		try:
+			ret = f(*args, **kwargs)
+			q.put(ret)
+		except:
+			return q.put(traceback.format_exc())
 
 	def wrap(*args, **kwargs):
 		"""this is the function returned from the decorator. It fires off
