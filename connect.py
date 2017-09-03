@@ -5,6 +5,7 @@ from openvpn import openvpn_connector
 from tools.threading import threaded
 from tools.localinfo import get_meta
 from tools.linux import pid_exists
+import traceback
 import logging
 import json
 import os
@@ -60,17 +61,21 @@ def check_alive():
 if __name__ == "__main__":
 	from gui.simple_gui import start_gui
 
-	config_path = os.sep.join(["content", "tool.json"])
-	with open(config_path, "r") as fp:
-		tool_config = json.loads(fp.read())
+	try:
+		config_path = os.sep.join(["content", "tool.json"])
+		with open(config_path, "r") as fp:
+			tool_config = json.loads(fp.read())
 
-	app_log_dir = tool_config.get("application_log", "")
-	application_log_path = "{}{}".format(app_log_dir, "application.log")
-	logging.basicConfig(
-		level=logging.DEBUG,
-		format='%(asctime)s %(levelname)s {%(pathname)s:%(lineno)d} %(message)s',
-		handlers=[logging.StreamHandler(), logging.FileHandler(filename=application_log_path, mode="w")],
-	)
-	locale_info = get_meta()
-	local_msg = "IP:{}\nREGION:{}".format(locale_info.ip, locale_info.region)
-	start_gui(start_fun=connect_vpn, stop_fun=disconnect_function, alive_fun=check_alive, locale_info=local_msg)
+		app_log_dir = tool_config.get("application_log", "")
+		application_log_path = "{}{}".format(app_log_dir, "application.log")
+		logging.basicConfig(
+			level=logging.DEBUG,
+			format='%(asctime)s %(levelname)s {%(pathname)s:%(lineno)d} %(message)s',
+			handlers=[logging.StreamHandler(), logging.FileHandler(filename=application_log_path, mode="w")],
+		)
+		locale_info = get_meta()
+		local_msg = "IP:{}\nREGION:{}".format(locale_info.ip, locale_info.region)
+		start_gui(start_fun=connect_vpn, stop_fun=disconnect_function, alive_fun=check_alive, locale_info=local_msg)
+	except:
+		logger = logging.getLogger(__name__)
+		logger.critical("Program crashed!\n{}".format(traceback.format_exc()))
