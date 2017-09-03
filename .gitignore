@@ -3,3 +3,4 @@ __pycache__
 *.bin
 .idea
 auth.txt
+*.pid

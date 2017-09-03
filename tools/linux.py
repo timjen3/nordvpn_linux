@@ -15,17 +15,21 @@ if os.name == 'posix':
 			return e.errno == errno.EPERM
 		else:
 			return True
+elif os.name == 'nt':
+	def pid_exists(pid):
+		"""Dev was done on windows, so needed this to work on there also."""
+		task_list = subprocess.Popen(["tasklist", "/FO", "CSV"], stdout=subprocess.PIPE)
+		headers = task_list.stdout.readline().decode("utf-8")
+		headers = [c for c in headers.split(",")]
+		pid_col = [i for i, c in enumerate(headers) if c == '"PID"'][0]
+		for line in task_list.stdout.readlines():
+			_this_pid = int(line.decode("utf-8").replace('"', "").split(",")[pid_col])
+			if _this_pid == pid:
+				return True
+		return False
 else:
 	def pid_exists(pid):
-		import ctypes
-		kernel32 = ctypes.windll.kernel32
-		SYNCHRONIZE = 0x100000
-		process = kernel32.OpenProcess(SYNCHRONIZE, 0, pid)
-		if process != 0:
-			kernel32.CloseHandle(process)
-			return True
-		else:
-			return False
+		raise NotImplementedError("Not implemented for '{}'".format(os.name))
 
 
 def send_desktop_msg(msg_string, delay=0):

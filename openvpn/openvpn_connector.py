@@ -1,4 +1,5 @@
 """Launches vpn connection using NordVPN ovpn connection file. Supports passing optional arguments."""
+from tools.threading import threaded
 from tools.linux import pid_exists
 from tools import localinfo
 from tools import linux
@@ -6,10 +7,13 @@ import time
 import os
 
 
+@threaded
 def watchdog(vpn_meta):
+	# TODO: Here's an idea... 1. start watchdog in new thread and 2. use sys.argv to start the vpn back up if it dies.
+	# 		Then can create a systemd service.
 	current_meta = localinfo.get_meta()
 	while current_meta.ip == vpn_meta.ip:
-		time.sleep(15)
+		time.sleep(60)
 		current_meta = localinfo.get_meta()
 	msg = "VPN DISCONNECTED! IP: {}=>{}; Region: {}=>{};".format(vpn_meta.ip, current_meta.ip, vpn_meta.region, current_meta.region)
 	linux.send_desktop_msg(msg, delay=3000)
@@ -28,7 +32,7 @@ def ensure_connect(pid, old_meta):
 	current_meta = localinfo.get_meta()
 	while pid_exists(pid) and old_meta.ip == current_meta.ip:
 		time.sleep(3)
-		print("still exists!?")
+		print("still exists!? {}".format(pid))
 		current_meta = localinfo.get_meta()
 	if old_meta.ip != current_meta.ip:
 		msg = "VPN CONNECTED! IP: {}=>{}; Region: {}=>{};".format(old_meta.ip, current_meta.ip, old_meta.region, current_meta.region)
@@ -75,3 +79,4 @@ def _process_openvpn_file(domain_name, config):
 def start_vpn_service(domain_name, config, old_meta):
 	pid = _process_openvpn_file(domain_name, config)
 	ensure_connect(pid, old_meta)
+	return pid
