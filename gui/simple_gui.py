@@ -62,8 +62,8 @@ class VpnManager(FrameBase):
 		finally:
 			status, msg = t.result_queue.get()
 			{
-				True: self.progress_form.fail,
-				False: self.progress_form.success
+				True: self.progress_form.success,
+				False: self.progress_form.fail
 			}[status]()
 			self.msg_box.set(msg)
 			{
