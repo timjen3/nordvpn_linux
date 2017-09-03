@@ -74,7 +74,7 @@ def start_vpn_service(domain_name, config, old_meta):
 	current_ip = localinfo.get_ip()
 	if old_meta.ip != current_ip:
 		new_meta = localinfo.get_meta2()
-		msg = "VPN CONNECTED! IP: {}; Region: {}; Dns: {}; DnsGeo: {};".format(new_meta.ip, new_meta.ipgeo, new_meta.dnsip, new_meta.dnsgeo)
+		msg = "VPN CONNECTED! IP: {}; Region: {}; Dns: {}; DnsGeo: {};".format(new_meta.ip, new_meta.ip_geo, new_meta.dns_ip, new_meta.dns_ip_geo)
 	else:
 		if pid_exists(pid):
 			msg = "OPENVPN APPEARS TO BE STRUGGLING TO CONNECT! IP: {}; Region: {};".format(current_ip, old_meta.region)
