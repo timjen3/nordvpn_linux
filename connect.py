@@ -8,11 +8,6 @@ from tools.linux import pid_exists
 import logging
 import json
 import os
-logging.basicConfig(
-	level=logging.DEBUG,
-	format='%(asctime)s %(levelname)s {%(pathname)s:%(lineno)d} %(message)s',
-	handlers=[logging.StreamHandler()],
-)
 
 
 @threaded
@@ -69,6 +64,13 @@ if __name__ == "__main__":
 	with open(config_path, "r") as fp:
 		tool_config = json.loads(fp.read())
 
+	app_log_dir = tool_config.get("application_log", "")
+	application_log_path = "{}{}".format(app_log_dir, "application.log")
+	logging.basicConfig(
+		level=logging.DEBUG,
+		format='%(asctime)s %(levelname)s {%(pathname)s:%(lineno)d} %(message)s',
+		handlers=[logging.StreamHandler(), logging.FileHandler(filename=application_log_path, mode="w")],
+	)
 	locale_info = get_meta()
 	local_msg = "IP:{}\nREGION:{}".format(locale_info.ip, locale_info.region)
 	start_gui(start_fun=connect_vpn, stop_fun=disconnect_function, alive_fun=check_alive, locale_info=local_msg)

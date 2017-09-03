@@ -5,7 +5,7 @@
     "--resolv-retry 3",
     "--auth-user-pass auth.txt",
     "--ping-exit 180 --inactive 3600 --ping 30",
-    "--log /usr/src/nordvpn_linux/application.log"
+    "--log /usr/src/nordvpn_linux/vpn.log"
   ],
   "connect": "udp",
   "max_response_time": 80,
@@ -13,5 +13,6 @@
   ],
   "required_search_keywords": [
   ],
-  "pid_file": "/usr/src/nordvpn_linux/content/vpn.pid"
+  "pid_file": "/usr/src/nordvpn_linux/content/vpn.pid",
+  "application_log_dir": "/usr/src/nordvpn_linux/content/"
 }

@@ -46,6 +46,7 @@ class VpnManager(FrameBase):
 			return
 		self.onbutton.config(state="disabled")
 		self.offbutton.config(state="disabled")
+		self.alivebutton.config(state="disabled")
 		self.progress_form.reset()
 		self._running = True
 		current_msg = self.msg_box.get()
@@ -70,6 +71,7 @@ class VpnManager(FrameBase):
 				True: lambda: self.onbutton.config(state="enabled"),
 				False: lambda: self.onbutton.config(state="enabled")
 			}[status]()
+			self.alivebutton.config(state="enabled")
 			self._running = False
 
 
