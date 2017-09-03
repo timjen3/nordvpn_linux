@@ -4,6 +4,7 @@
 """
 import threading
 import traceback
+import logging
 import queue
 
 
@@ -16,7 +17,9 @@ def threaded(f, daemon=False):
 			ret = f(*args, **kwargs)
 			q.put(ret)
 		except:
-			return q.put((False, traceback.format_exc()))
+			logger = logging.getLogger(__name__)
+			logger.error("Async function failed!\n{}".format(traceback.format_exc()))
+			return q.put((False, "Failed--see 'application.log'."))
 
 	def wrap(*args, **kwargs):
 		"""this is the function returned from the decorator. It fires off
