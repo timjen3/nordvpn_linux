@@ -46,40 +46,32 @@ class VpnManager(FrameBase):
 		if self._running:
 			return
 		logger = logging.getLogger(__name__)
-		logger.info("Async execution_text: {}".format(execution_text))
+		logger.info("Executing function: {}.".format(execution_text))
 		self._running = True
 
 		try:
-			logger.info("Disabling buttons...")
 			self.onbutton.config(state="disabled")
 			self.offbutton.config(state="disabled")
 			self.alivebutton.config(state="disabled")
-			logger.info("Resetting progress bar...")
 			self.progress_form.reset()
-			logger.info("Executing async function...")
 			t = fun()  # async!
-			logger.info("Setting msg_box value...")
 			self.msg_box.set(execution_text)
-			logger.info("Waiting for function to complete...")
 			while t.is_alive():
 				self.progress_bar.step(1)
 				self.after(100, self.update())
-			logger.info("Operation completed updating progress bar...")
 			status, msg = t.result_queue.get()
 			{
 				True: self.progress_form.success,
 				False: self.progress_form.fail
 			}[status]()
-			logger.info("Enabling relevant button...")
 			{
 				True: lambda: self.offbutton.config(state="enabled"),
 				False: lambda: self.onbutton.config(state="enabled")
 			}[status]()
 			self.alivebutton.config(state="enabled")
-			logger.info("Updating message box...")
 			self.msg_box.set(msg)
 		except:
-			logger.info("Error executing async function in gui!\n{}".format(traceback.format_exc()))
+			logger.error("Error executing async function in gui!\n{}".format(traceback.format_exc()))
 			self.msg_box.set("Encountered error: {}\n".format(traceback.format_exc()))
 			self.after(3000, self.msg_box.set("Unknown state."))
 			self.offbutton.config(state="enabled")
@@ -87,7 +79,6 @@ class VpnManager(FrameBase):
 			self.alivebutton.config(state="enabled")
 			self.progress_form.fail()
 		finally:
-			logger.info("Updating gui...")
 			self.after(100, self.update())
 			self._running = False
 

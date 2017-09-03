@@ -19,7 +19,7 @@ if __name__ == "__main__":
 		application_log_path = "{}{}".format(app_log_dir, "application.log")
 
 	except:
-		print("Failed to bootstrap!\n{}".format(traceback.format_exc()))
+		print("Failed to bootstrap! Will exit.\n{}".format(traceback.format_exc()))
 		sys.exit(1)
 
 	print("Init logger...")
@@ -30,9 +30,13 @@ if __name__ == "__main__":
 			handlers=[logging.StreamHandler(), logging.FileHandler(filename=application_log_path, mode="w")],
 		)
 		logger = logging.getLogger(__name__)
+		logger.info("Successfully initialized logging.")
 	except:
-		print("Failed to init logging!\n{}".format(traceback.format_exc()))
-		sys.exit(2)
+		print("Error initializing logger!\n{}".format(traceback.format_exc()))
+		print("Trying to initialize stdout-only logger.")
+		logging.basicConfig(level=logging.DEBUG, format='%(asctime)s %(levelname)s {%(pathname)s:%(lineno)d} %(message)s', handlers=[logging.StreamHandler()])
+		logger = logging.getLogger(__name__)
+		logger.info("Failed to initialize logger, trying to log to stdout only.")
 
 	logger.debug("Application bootstrapped. Starting GUI.")
 	try:
