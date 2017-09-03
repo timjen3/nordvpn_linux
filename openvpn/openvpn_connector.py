@@ -20,7 +20,7 @@ def watchdog(vpn_meta):
 	while vpn_meta.ip == current_ip:
 		time.sleep(60)
 		current_meta = localinfo.get_meta2()
-	msg = "VPN DISCONNECTED! IP: {}=>{}; Region: {}=>{};".format(vpn_meta.ip, current_meta.ip, vpn_meta.region, current_meta.ipgeo)
+	msg = "VPN DISCONNECTED! IP: {}=>{}; Region: {}=>{};".format(vpn_meta.ip, current_meta.ip, vpn_meta.ip_geo, current_meta.ip_geo)
 	linux.send_desktop_msg(msg, delay=3000)
 
 
@@ -29,7 +29,7 @@ def disconnect():
 	linux.execute_and_wait("gksudo killall openvpn", timeout=60)
 	linux.execute_and_wait("gksudo service networking restart", timeout=60)
 	new_meta = localinfo.get_meta2()
-	msg = "VPN DISCONNECTED! IP: {}=>{}; Region: {}=>{};".format(current_meta.ip, new_meta.ip, current_meta.region, new_meta.region)
+	msg = "VPN DISCONNECTED! IP: {}=>{}; Region: {}=>{};".format(current_meta.ip, new_meta.ip, current_meta.ip_geo, new_meta.ip_geo)
 	linux.send_desktop_msg(msg, delay=3000)
 
 
