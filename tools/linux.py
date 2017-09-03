@@ -53,7 +53,7 @@ def execute_and_wait(command, timeout=5):
 	try:
 		sp = subprocess.Popen(command, shell=True)
 		pid = sp.pid
-		sp.communicate()
+		# sp.communicate()
 		sp.wait(timeout=timeout)
 	except:
 		return -1
