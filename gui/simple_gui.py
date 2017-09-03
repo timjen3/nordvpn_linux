@@ -12,8 +12,8 @@ class FrameBase(tkinter.Frame):
 		super().__init__(master=root, height=height)
 
 	def place_me(self):
-		self.grid(row=MsgFrame.__POSITION__)
-		MsgFrame.__POSITION__ += 1
+		self.grid(row=FrameBase.__POSITION__)
+		FrameBase.__POSITION__ += 1
 
 
 class MsgFrame(FrameBase):
@@ -70,8 +70,8 @@ class VpnManager(FrameBase):
 class ProgressBar(FrameBase):
 	def __init__(self, root):
 		super().__init__(root)
-		self.failed_task = ttk.Progressbar(master=self, style="red.Horizontal.TProgressbar", length=325, orient="horizontal", mode="determinate")
-		self.progress = ttk.Progressbar(master=self, style="green.Horizontal.TProgressbar", length=325, orient="horizontal", mode="determinate")
+		self.failed_task = ttk.Progressbar(master=self, style="red.Horizontal.TProgressbar", length=330, orient="horizontal", mode="determinate")
+		self.progress = ttk.Progressbar(master=self, style="green.Horizontal.TProgressbar", length=330, orient="horizontal", mode="determinate")
 		self.failed_task.grid(row=0, column=0, sticky=tkinter.EW)
 		self.progress.grid(row=0, column=0, sticky=tkinter.EW)
 		self.progress.tkraise()

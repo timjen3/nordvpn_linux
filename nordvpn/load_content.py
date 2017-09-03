@@ -29,7 +29,7 @@ class NordVpnServerData:
 			pickle.dump(self.server_data, file=fp)
 
 	def ensure_ovpn_files_exist(self):
-		# TODO: After x time passes re-download ovpn files.
+		# TODO: Check creation date of files. If more than X days old, delete and re-download.
 		if not os.path.exists(self.ovpn_file_dir):
 			os.makedirs(self.ovpn_file_dir)
 			url = "https://api.nordvpn.com/files/zipv2"
