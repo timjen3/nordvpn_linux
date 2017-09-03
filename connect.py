@@ -53,6 +53,8 @@ def check_alive():
 		pid = open(tool_config["pid_file"], "r").read()
 		if pid.isdigit():
 			pid = int(pid)
+		else:
+			pid = -1
 		is_alive = pid_exists(pid)
 	locale_info = get_meta()
 	return is_alive, "IP:{}\nREGION:{}".format(locale_info.ip, locale_info.region)
