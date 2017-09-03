@@ -1,6 +1,7 @@
 from tkinter import ttk
 import traceback
 import tkinter
+import logging
 __FORM_BACKGROUND_COLOR__ = "light gray"
 __MSG_BOX_BG_COLOR__ = "light green"
 
@@ -44,6 +45,8 @@ class VpnManager(FrameBase):
 	def do_async_show_progress(self, fun, execution_text):
 		if self._running:
 			return
+		logger = logging.getLogger(__name__)
+		logger.info("Async execution_text: {}".format(execution_text))
 		self.onbutton.config(state="disabled")
 		self.offbutton.config(state="disabled")
 		self.alivebutton.config(state="disabled")
@@ -68,6 +71,7 @@ class VpnManager(FrameBase):
 			self.msg_box.set(msg)
 			self.alivebutton.config(state="enabled")
 		except:
+			logger.info("Error executing async function in gui!\n{}".format(traceback.format_exc))
 			self.msg_box.set("Encountered error: {}\n".format(traceback.format_exc()))
 			self.after(3000, self.msg_box.set("Unknown state."))
 			self.offbutton.config(state="enabled")
