@@ -13,10 +13,11 @@ def watchdog(vpn_meta):
 	# 		Then can create a systemd service.
 	current_ip = localinfo.get_ip()
 	# TODO: Check if openvpn is running instead of relying on api.
+	current_meta = vpn_meta
 	while vpn_meta.ip == current_ip:
 		time.sleep(60)
 		current_meta = localinfo.get_meta2()
-	msg = "VPN DISCONNECTED! IP: {}=>{}; Region: {}=>{};".format(vpn_meta.ip, current_meta.ip, vpn_meta.region, current_meta.region)
+	msg = "VPN DISCONNECTED! IP: {}=>{}; Region: {}=>{};".format(vpn_meta.ip, current_meta.ip, vpn_meta.region, current_meta.ipgeo)
 	linux.send_desktop_msg(msg, delay=3000)
 
 
@@ -39,7 +40,6 @@ def ensure_connect(pid, old_meta):
 		msg = "VPN CONNECTED! IP: {}; Region: {}; Dns: {}; DnsGeo: {};".format(new_meta.ip, new_meta.ipgeo, new_meta.dnsip, new_meta.dnsgeo)
 	else:
 		msg = "VPN FAILED TO CONNECT! IP: {}; Region: {};".format(current_ip, old_meta.region)
-	print(msg)
 	linux.send_desktop_msg(msg, delay=3000)
 	# watchdog(current_meta)  # TODO: reconnect auto?
 
