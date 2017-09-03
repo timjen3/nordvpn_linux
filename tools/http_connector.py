@@ -8,7 +8,7 @@ import io
 
 
 def get_request(scheme, host, endpoint, method, headers):
-	raw_response = "REQUEST FAILED"
+	raw_response = None
 	for retry in range(0, 3):
 		try:
 			if scheme == "https":
@@ -42,6 +42,8 @@ def get_text(url):
 		"Connection": "keep-alive",
 	}
 	raw_response = _explode_and_get(url=url, headers=headers)
+	if raw_response is None:
+		return "?"
 	return raw_response.decode("utf-8")
 
 
@@ -52,6 +54,8 @@ def get_json(url):
 		"Connection": "keep-alive",
 	}
 	raw_response = _explode_and_get(url=url, headers=headers)
+	if raw_response is None:
+		return {}
 	json_string = raw_response.decode("utf-8")
 	return json.loads(json_string)
 
@@ -63,5 +67,7 @@ def get_zip_file(url):
 		"Connection": "keep-alive",
 	}
 	raw_response = _explode_and_get(url=url, headers=headers)
+	if raw_response is None:
+		return None
 	fp = io.BytesIO(raw_response)
 	return zipfile.ZipFile(file=fp)
