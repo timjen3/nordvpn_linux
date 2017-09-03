@@ -49,7 +49,6 @@ class VpnManager(FrameBase):
 		self.alivebutton.config(state="disabled")
 		self.progress_form.reset()
 		self._running = True
-		current_msg = self.msg_box.get()
 		t = fun()  # async!
 		try:
 			self.msg_box.set(execution_text)
@@ -65,7 +64,7 @@ class VpnManager(FrameBase):
 			{
 				True: self.progress_form.fail,
 				False: self.progress_form.success
-			}[current_msg == msg]()
+			}[status]()
 			self.msg_box.set(msg)
 			{
 				True: lambda: self.onbutton.config(state="enabled"),

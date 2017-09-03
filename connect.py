@@ -53,14 +53,11 @@ def check_alive():
 	if "pid_file" in tool_config and os.path.exists(tool_config["pid_file"]):
 		with open(tool_config["pid_file"], "r") as fp:
 			pid = fp.read().strip(" \r\n")
-			logger = logging.getLogger(__name__)
-			logger.info("PID: {}; LEN: {}".format(pid, len(pid)))
 			if pid.isdigit():
 				pid = int(pid)
 			else:
 				pid = -1
 			is_alive = pid_exists(pid)
-			logger.info(is_alive)
 	locale_info = get_meta()
 	return is_alive, "IP:{}\nREGION:{}".format(locale_info.ip, locale_info.region)
 
