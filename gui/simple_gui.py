@@ -33,6 +33,8 @@ class MsgFrame(FrameBase):
 	def update_msg(self, msg):
 		"""I suck with gui stuff..implented a fixed-size hack for msgbox b/c couldn't find one i liked."""
 		from io import StringIO
+		logger = logging.getLogger(__name__)
+		logger.debug("Attempting to convert a message into displayable format:\n{}".format(msg))
 		size_spec = self.__MSG_BOX_WIDTH__ * self.__MSG_BOX_ROWS__
 		msg = msg.split("\n")
 		_out = ""

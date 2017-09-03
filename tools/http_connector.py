@@ -19,7 +19,9 @@ def get_request(scheme, host, endpoint, method, headers):
 			raw_response = connection.getresponse()
 		except:
 			logger = logging.getLogger(__name__)
-			logger.debug("Connection attempt {} to host failed...".format(retry))
+			logger.debug("Connection attempt {} to host '{}' failed...".format(retry, host))
+		finally:
+			connection.close()
 	return raw_response
 
 
