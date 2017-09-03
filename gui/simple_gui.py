@@ -49,28 +49,32 @@ class VpnManager(FrameBase):
 		self.alivebutton.config(state="disabled")
 		self.progress_form.reset()
 		self._running = True
-		t = fun()  # async!
+
 		try:
+			t = fun()  # async!
 			self.msg_box.set(execution_text)
 			while t.is_alive():
 				self.progress_bar.step(1)
 				self.after(100, self.update())
-		except:
-			self.progress_form.fail()
-			self.msg_box.set("Encountered error: {}\n".format(traceback.format_exc()))
-			self.after(3000, self.msg_box.set(""))
-		finally:
 			status, msg = t.result_queue.get()
 			{
 				True: self.progress_form.success,
 				False: self.progress_form.fail
 			}[status]()
-			self.msg_box.set(msg)
 			{
 				True: lambda: self.offbutton.config(state="enabled"),
 				False: lambda: self.onbutton.config(state="enabled")
 			}[status]()
+			self.msg_box.set(msg)
 			self.alivebutton.config(state="enabled")
+		except:
+			self.msg_box.set("Encountered error: {}\n".format(traceback.format_exc()))
+			self.after(3000, self.msg_box.set("Unknown state."))
+			self.offbutton.config(state="enabled")
+			self.onbutton.config(state="enabled")
+			self.alivebutton.config(state="enabled")
+			self.progress_form.fail()
+		finally:
 			self._running = False
 
 
