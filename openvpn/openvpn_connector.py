@@ -23,7 +23,6 @@ def disconnect():
 	current_meta = localinfo.get_meta()
 	linux.execute_and_wait("gksudo killall openvpn")
 	linux.execute_and_wait("gksudo service networking restart")
-	time.sleep(3)  # ensure network is re-connected to prevent hanging...
 	new_meta = localinfo.get_meta()
 	msg = "VPN DISCONNECTED! IP: {}=>{}; Region: {}=>{};".format(current_meta.ip, new_meta.ip, current_meta.region, new_meta.region)
 	linux.send_desktop_msg(msg, delay=3000)

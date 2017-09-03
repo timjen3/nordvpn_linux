@@ -8,9 +8,9 @@ import io
 
 def get_request(scheme, host, endpoint, method, headers):
 	if scheme == "https":
-		connection = http.client.HTTPSConnection(host)
+		connection = http.client.HTTPSConnection(host, timeout=5)
 	else:
-		connection = http.client.HTTPConnection(host)
+		connection = http.client.HTTPConnection(host, timeout=5)
 	connection.request(method=method, url="{}".format(endpoint), headers=headers)
 	raw_response = connection.getresponse()
 	return raw_response
