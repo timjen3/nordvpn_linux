@@ -3,6 +3,7 @@ from tools.threading import threaded
 from tools.linux import pid_exists
 from tools import localinfo
 from tools import linux
+import logging
 import time
 import os
 
@@ -31,10 +32,12 @@ def disconnect():
 
 
 def ensure_connect(pid, old_meta):
-	current_ip = localinfo.get_ip()
+	# current_ip = localinfo.get_ip()
+	logger = logging.getLogger(__name__)
+	logger.info("Waiting for vpn init process with pid '{}' to finish.".format(pid))
 	while pid_exists(pid):  # and old_meta.ip == current_meta.ip:
 		time.sleep(10)
-		current_ip = localinfo.get_ip()
+	current_ip = localinfo.get_ip()
 	if old_meta.ip != current_ip:
 		new_meta = localinfo.get_meta2()
 		msg = "VPN CONNECTED! IP: {}; Region: {}; Dns: {}; DnsGeo: {};".format(new_meta.ip, new_meta.ipgeo, new_meta.dnsip, new_meta.dnsgeo)
