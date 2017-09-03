@@ -69,6 +69,8 @@ def _process_openvpn_file(domain_name, config):
 
 def start_vpn_service(domain_name, config, old_meta):
 	pid = _process_openvpn_file(domain_name, config)
+	logger = logging.getLogger(__name__)
+	logger.info("PID of vpn init script is: {}".format(pid))
 	current_ip = localinfo.get_ip()
 	if old_meta.ip != current_ip:
 		new_meta = localinfo.get_meta2()
