@@ -45,7 +45,7 @@ def connect_vpn():
 @threaded
 def disconnect_function():
 	openvpn_connector.disconnect()
-	t = check_alive(tool_config)
+	t = check_alive()
 	return t.result_queue.get()
 
 
@@ -54,7 +54,9 @@ def check_alive():
 	"""Checks if process defined in pid file is alive."""
 	is_alive = False
 	if "pid_file" in tool_config and os.path.exists(tool_config["pid_file"]):
-		pid = int(open("content/vpn.pid", "r").read())
+		pid = open(tool_config["pid_file"], "r").read()
+		if pid.isdigit():
+			pid = int(pid)
 		is_alive = pid_exists(pid)
 	locale_info = get_meta()
 	return is_alive, "IP:{}\nREGION:{}".format(locale_info.ip, locale_info.region)

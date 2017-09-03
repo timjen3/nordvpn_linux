@@ -13,5 +13,5 @@
   ],
   "required_search_keywords": [
   ],
-  "pid_file": "/usr/src/nordvpn_linux/vpn.pid"
+  "pid_file": "/usr/src/nordvpn_linux/content/vpn.pid"
 }
