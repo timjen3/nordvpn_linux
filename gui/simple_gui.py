@@ -39,7 +39,7 @@ class MsgFrame(FrameBase):
 		else:  # assume string...
 			msg = msg.split("\n")
 		size_spec = self.__MSG_BOX_WIDTH__ * self.__MSG_BOX_ROWS__
-		_out = "{}#:\n".format(self.msg_number)
+		_out = "\n{}#:\n".format(self.msg_number)
 		for v in msg:
 			_line_prefix = "___"
 			_v = StringIO(v)
