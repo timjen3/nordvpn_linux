@@ -1,8 +1,8 @@
 from nordvpn.nordvpn_connector import ServerManager
-from tools.localinfo import get_meta, get_meta2
 from tools.speed_test import get_avg_ping
 from openvpn import openvpn_connector
 from tools.threading import threaded
+from tools.localinfo import get_meta
 from tools.linux import pid_exists
 import logging
 import json
@@ -48,7 +48,7 @@ def connect_vpn():
 			logger.debug("Skipping a server because it is responding too slowly:\n\t" + target_server_stats)
 		else:
 			logger.info("Connecting to server via vpn tunnel...\n\t" + target_server_stats)
-			openvpn_connector.start_vpn_service(server.domain, __TOOL_CONFIG__, SM.locale_data)
+			openvpn_connector.connect(server.domain, __TOOL_CONFIG__, SM.locale_data)
 			t = check_alive()
 			return t.result_queue.get()
 
@@ -72,5 +72,5 @@ def check_alive():
 			else:
 				pid = -1
 			is_alive = pid_exists(pid)
-	locale_info = get_meta2()
-	return is_alive, "IP:{}\nREGION:{}".format(locale_info.ip, locale_info.ip_geo)
+	locale_info = get_meta()
+	return is_alive, locale_info.serializable

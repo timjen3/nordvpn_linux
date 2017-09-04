@@ -1,4 +1,5 @@
 from tkinter import ttk
+from io import StringIO
 import traceback
 import tkinter
 import logging
@@ -19,42 +20,41 @@ class FrameBase(tkinter.Frame):
 
 
 class MsgFrame(FrameBase):
-	def __init__(self, root, start_text):
+	def __init__(self, root, locale_info):
 		super().__init__(root, bg="white", height=200)
+		self.msg_number = 1
 		self.__MSG_BOX_WIDTH__ = 25
-		self.__MSG_BOX_ROWS__ = 12
-		self.msg_var = tkinter.StringVar()
-		self.update_msg(start_text)
+		self.__MSG_BOX_ROWS__ = 8
 		title_label = ttk.Label(self, style="title.TLabel", text="Connections persist if closed!")
-		self.main_msg = tkinter.Label(master=self, width=self.__MSG_BOX_WIDTH__, height=self.__MSG_BOX_ROWS__, textvariable=self.msg_var, background=__MSG_BOX_BG_COLOR__, foreground="dark green", relief="sunken", justify="left", font=("courier", 16))
 		title_label.grid(row=0)
+		self.msg_var = tkinter.StringVar()
+		self.main_msg = tkinter.Text(master=self, width=self.__MSG_BOX_WIDTH__, height=self.__MSG_BOX_ROWS__, background=__MSG_BOX_BG_COLOR__, foreground="dark green", relief="sunken", font=("courier", 16))
+		self.update_msg(locale_info)
 		self.main_msg.grid(row=1, sticky=tkinter.EW)
 
 	def update_msg(self, msg):
-		"""I suck with gui stuff..implented a fixed-size hack for msgbox b/c couldn't find one i liked."""
-		from io import StringIO
-		logger = logging.getLogger(__name__)
-		logger.debug("Attempting to convert a message into displayable format:\n{}".format(msg))
+		"""Dict to msg formatter."""
+		if isinstance(msg, dict):
+			msg = ["{}: {}".format(k, v) for k, v in msg.items()]
+		else:  # assume string...
+			msg = msg.split("\n")
 		size_spec = self.__MSG_BOX_WIDTH__ * self.__MSG_BOX_ROWS__
-		msg = msg.split("\n")
-		_out = ""
-		for _m in msg:
-			_line_prefix = ""
-			_msg_parts = _m.split(":")
-			if len(_msg_parts) > 1:
-				_out += "{}:\n".format(_msg_parts[0])
-				_m = "".join(_msg_parts[1:])
-				_line_prefix = "___"
-			_m = StringIO(_m)
+		_out = "{}#:\n".format(self.msg_number)
+		for v in msg:
+			_line_prefix = "___"
+			_v = StringIO(v)
 			while True:
-				chunk = _m.read(self.__MSG_BOX_WIDTH__ - len(_line_prefix))
+				chunk = _v.read(self.__MSG_BOX_WIDTH__ - len(_line_prefix))
 				if not chunk:
 					break
+				chunk = chunk.strip()
 				if len(chunk) + len(_line_prefix) < self.__MSG_BOX_WIDTH__:
 					chunk += " " * (self.__MSG_BOX_WIDTH__ - len(chunk))
 				_out += _line_prefix + chunk + "\n"
 			_out = _out[:size_spec]
-		self.msg_var.set(_out)
+		self.main_msg.insert(tkinter.END, _out)
+		self.main_msg.see("end")
+		self.msg_number += 1
 
 
 class VpnManager(FrameBase):
@@ -135,7 +135,7 @@ class ProgressBar(FrameBase):
 		self.progress.tkraise()
 
 
-def start_gui(locale_info, start_fun, stop_fun, alive_fun=None):
+def start_gui(locale_info, start_fun, stop_fun, alive_fun):
 	tk = tkinter.Tk()
 	tk.resizable(0, 0)
 	s = ttk.Style()
@@ -146,11 +146,11 @@ def start_gui(locale_info, start_fun, stop_fun, alive_fun=None):
 	s.configure("TButton", foreground="black", background="white", font=("courier", 18), take_focus=True)
 	# tk.configure(background=__FORM_BACKGROUND_COLOR__)
 	tk.title("VPN Connector (NORDVPN)")
-	b = MsgFrame(tk, start_text=locale_info)
+	print(locale_info)
+	b = MsgFrame(tk, locale_info=locale_info)
 	pb = ProgressBar(tk)
 	vm = VpnManager(tk, onfun=start_fun, offfun=stop_fun, alivefun=alive_fun, progress_bar=pb, msg_box=b)
 	b.place_me()
 	pb.place_me()
 	vm.place_me()
-	vm.do_async_show_progress(alive_fun, "Checking pulse...")
 	tkinter.mainloop()

@@ -24,6 +24,10 @@ class Server:
 		else:
 			self.load = 100
 
+	@property
+	def serializable(self):
+		return {k: v for k, v in self.__dict__.items() if k[0] != "_"}
+
 
 class LocaleInfo:
 	def __init__(self, ip, **kwargs):
@@ -40,6 +44,10 @@ class LocaleInfo:
 		for attribute in my_attributes:
 			setattr(self, attribute, kwargs.get(attribute, None))
 
+	@property
+	def serializable(self):
+		return {k: v for k, v in self.__dict__.items() if k[0] != "_"}
+
 
 class LocaleInfo2:
 	def __init__(self, **kwargs):
@@ -51,3 +59,7 @@ class LocaleInfo2:
 		]
 		for attribute in my_attributes:
 			setattr(self, attribute, kwargs.get(attribute, None))
+
+	@property
+	def serializable(self):
+		return {k: v for k, v in self.__dict__.items() if k[0] != "_"}
