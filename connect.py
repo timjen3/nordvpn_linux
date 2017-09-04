@@ -39,8 +39,8 @@ if __name__ == "__main__":
 
 	logger.debug("Application bootstrapped. Starting GUI.")
 	try:
-		locale_info = get_meta()
-		local_msg = "IP:{}\nREGION:{}".format(locale_info.ip, locale_info.region)
+		locale_info = get_meta2()
+		local_msg = "IP:{}\nISP:{}".format(locale_info.ip, locale_info.ip_geo)
 		start_gui(start_fun=connect_vpn, stop_fun=disconnect_function, alive_fun=check_alive, locale_info=local_msg)
 	except:
 		logger.critical("Program crashed!\n{}".format(traceback.format_exc()))

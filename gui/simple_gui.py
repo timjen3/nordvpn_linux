@@ -68,7 +68,6 @@ class VpnManager(FrameBase):
 		self.alivebutton.grid(row=0, column=2, sticky=tkinter.EW)
 		self.msg_box = msg_box
 		self.progress_form = progress_bar
-		self.progress_bar = progress_bar.progress
 		self._running = False
 
 	def do_async_show_progress(self, fun, execution_text):
@@ -86,7 +85,7 @@ class VpnManager(FrameBase):
 			t = fun()  # async!
 			self.msg_box.update_msg(execution_text)
 			while t.is_alive():
-				self.progress_bar.step(1)
+				self.progress_form.progress.step(1)
 				self.after(100, self.update())
 			status, msg = t.result_queue.get()
 			{
