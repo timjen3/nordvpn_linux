@@ -155,3 +155,4 @@ def start_gui(locale_info, start_fun, stop_fun, alive_fun):
 	pb.place_me()
 	vm.place_me()
 	tkinter.mainloop()
+	vm.do_async_show_progress(alive_fun, "looking for vpn...")
