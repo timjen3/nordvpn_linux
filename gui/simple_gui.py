@@ -39,7 +39,7 @@ class MsgFrame(FrameBase):
 		else:  # assume string...
 			msg = msg.split("\n")
 		size_spec = self.__MSG_BOX_WIDTH__ * self.__MSG_BOX_ROWS__
-		_out = "\n{}#:\n".format(self.msg_number)
+		_out = "{}#:\n".format(self.msg_number)
 		for v in msg:
 			_line_prefix = "___"
 			_v = StringIO(v)
@@ -51,7 +51,7 @@ class MsgFrame(FrameBase):
 				if len(chunk) + len(_line_prefix) < self.__MSG_BOX_WIDTH__:
 					chunk += " " * (self.__MSG_BOX_WIDTH__ - len(chunk))
 				_out += _line_prefix + chunk + "\n"
-			_out = _out[:size_spec]
+			_out = _out[:size_spec] + "\n"
 		self.main_msg.insert(tkinter.END, _out)
 		self.main_msg.see("end")
 		self.msg_number += 1
