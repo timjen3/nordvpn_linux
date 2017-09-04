@@ -51,7 +51,9 @@ class MsgFrame(FrameBase):
 				if len(chunk) + len(_line_prefix) < self.__MSG_BOX_WIDTH__:
 					chunk += " " * (self.__MSG_BOX_WIDTH__ - len(chunk))
 				_out += _line_prefix + chunk + "\n"
-			_out = _out[:size_spec] + "\n"
+			_out = _out[:size_spec]
+		if not _out.endswith("\n"):
+			_out += "\n"
 		self.main_msg.insert(tkinter.END, _out)
 		self.main_msg.see("end")
 		self.msg_number += 1
