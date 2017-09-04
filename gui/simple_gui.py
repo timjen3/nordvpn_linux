@@ -25,7 +25,7 @@ class MsgFrame(FrameBase):
 		self.msg_number = 1
 		self.__MSG_BOX_WIDTH__ = 25
 		self.__MSG_BOX_ROWS__ = 8
-		title_label = ttk.Label(self, style="title.TLabel", text="Connections persist if closed!")
+		title_label = ttk.Label(self, style="title.TLabel", text="Exit does not end connections...")
 		title_label.grid(row=0)
 		self.msg_var = tkinter.StringVar()
 		self.main_msg = tkinter.Text(master=self, width=self.__MSG_BOX_WIDTH__, height=self.__MSG_BOX_ROWS__, background=__MSG_BOX_BG_COLOR__, foreground="dark green", relief="sunken", font=("courier", 16))
@@ -148,7 +148,6 @@ def start_gui(locale_info, start_fun, stop_fun, alive_fun):
 	s.configure("TButton", foreground="black", background="white", font=("courier", 18), take_focus=True)
 	# tk.configure(background=__FORM_BACKGROUND_COLOR__)
 	tk.title("VPN Connector (NORDVPN)")
-	print(locale_info)
 	b = MsgFrame(tk, locale_info=locale_info)
 	pb = ProgressBar(tk)
 	vm = VpnManager(tk, onfun=start_fun, offfun=stop_fun, alivefun=alive_fun, progress_bar=pb, msg_box=b)

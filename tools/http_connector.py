@@ -8,7 +8,9 @@ import io
 
 
 def get_request(scheme, host, endpoint, method, headers):
+	logger = logging.getLogger(__name__)
 	raw_response = None
+	logger.debug("{} REQUEST: {} | {} | {} | {}".format(scheme, host, endpoint, method, headers))
 	for retry in range(0, 3):
 		try:
 			if scheme == "https":
@@ -19,7 +21,7 @@ def get_request(scheme, host, endpoint, method, headers):
 			raw_response = connection.getresponse()
 			return raw_response
 		except:
-			print("Connection attempt {} to host '{}' failed...".format(retry, host))
+			logger.error("Connection attempt {} to host '{}' failed...".format(retry, host))
 	return raw_response
 
 
